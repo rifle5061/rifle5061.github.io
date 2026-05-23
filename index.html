@@ -3,101 +3,275 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ボートAIリスク研究所｜AIリスク診断検索</title>
+<title>ボートAIリスク研究所｜AIリスク診断</title>
 <style>
-:root{--bg:#07111f;--line:rgba(255,255,255,.14);--text:#f4f8ff;--muted:#a9b7c9;--a:#2fe3ff;--b:#7cf7b5;--w:#ffcc66}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top left,rgba(47,227,255,.16),transparent 34%),var(--bg);color:var(--text);line-height:1.7}.wrap{width:min(1080px,calc(100% - 32px));margin:auto}header{position:sticky;top:0;background:rgba(7,17,31,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);z-index:9}.nav{height:64px;display:flex;justify-content:space-between;align-items:center;gap:12px}.logo{font-weight:900}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:11px 16px;font-weight:900;background:linear-gradient(135deg,var(--a),var(--b));color:#06111c;text-decoration:none;cursor:pointer;font-family:inherit}.btn.sub{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--line)}.hero{padding:72px 0 36px}.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:28px;align-items:center}h1{font-size:clamp(34px,6vw,64px);line-height:1.08;margin:0 0 18px;letter-spacing:-.05em}.grad{background:linear-gradient(135deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}.lead{color:var(--muted);font-size:17px;max-width:680px}.card{border:1px solid var(--line);background:rgba(16,36,61,.76);border-radius:24px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25)}.risk{display:grid;gap:10px}.risk div{display:flex;justify-content:space-between;gap:10px;border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:15px;padding:12px}.risk span{color:var(--muted)}.risk b.warn{color:var(--w)}section{padding:46px 0}.head h2{font-size:clamp(28px,4vw,44px);line-height:1.15;margin:0 0 10px;letter-spacing:-.04em}.head p{color:var(--muted)}.form{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}label{display:block;font-size:13px;font-weight:900;color:#d7edff;margin-bottom:6px}select{width:100%;border:1px solid var(--line);background:rgba(0,0,0,.18);color:var(--text);border-radius:14px;padding:12px;font:inherit}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.notice{border:1px solid rgba(255,204,102,.24);background:rgba(255,204,102,.08);color:#ffe5ad;border-radius:16px;padding:12px;font-size:13px;margin-top:14px}.result{display:none;margin-top:18px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}.metric{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:16px;padding:12px}.metric span{display:block;color:var(--muted);font-size:12px}.metric strong{font-size:26px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 16px}.chip{border:1px solid rgba(47,227,255,.28);background:rgba(47,227,255,.10);border-radius:999px;padding:5px 9px;font-weight:900;font-size:13px}.chip.warn{border-color:rgba(255,204,102,.34);background:rgba(255,204,102,.10)}.text{white-space:pre-wrap;background:rgba(0,0,0,.16);border:1px solid var(--line);border-radius:16px;padding:14px;color:#dceeff}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.boat-risk-wrap{overflow-x:auto;margin:8px 0 18px;border:1px solid var(--line);border-radius:16px;background:rgba(0,0,0,.12)}
-.boat-risk-table{width:100%;border-collapse:collapse;min-width:720px}
-.boat-risk-table th,.boat-risk-table td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top;font-size:14px}
-.boat-risk-table th{color:#d7edff;background:rgba(255,255,255,.045);font-size:13px;white-space:nowrap}
-.boat-risk-table tr:last-child td{border-bottom:0}
-.rank{display:inline-flex;align-items:center;justify-content:center;min-width:42px;border-radius:999px;padding:4px 8px;font-weight:900;background:rgba(47,227,255,.10);border:1px solid rgba(47,227,255,.28)}
-.rank.S,.rank.A,.rank.A-,.rank.Aplus{background:rgba(124,247,181,.10);border-color:rgba(124,247,181,.32)}
-.rank.B,.rank.B-,.rank.Bplus{background:rgba(47,227,255,.10);border-color:rgba(47,227,255,.28)}
-.rank.C,.rank.Cplus,.rank.C- {background:rgba(255,204,102,.10);border-color:rgba(255,204,102,.32)}
-footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:13px}@media(max-width:850px){.hero-grid,.grid3{grid-template-columns:1fr}.form,.metrics{grid-template-columns:1fr}}@media(max-width:540px){.btn{width:100%}}
+:root{
+  --bg:#f6f8fc; --card:#ffffff; --line:#dbe4f0; --text:#0f172a; --muted:#5b6b83;
+  --a:#1ec8ff; --b:#6fe7a8; --nav:#0b1730; --warn:#fff4db; --warn-b:#f1c774;
+  --pill:#eff6ff; --pill-b:#b7d4ff;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+.wrap{width:min(1120px,calc(100% - 24px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}
+.logo{font-weight:900;font-size:22px;letter-spacing:-.03em;color:#0b1730}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:14px 22px;font-weight:900;text-decoration:none;cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,var(--a),var(--b));color:#06243a;box-shadow:0 10px 28px rgba(0,160,255,.16)}
+.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--text)}
+.hero{padding:26px 0 10px}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+.hero-copy,.hero-photo{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:24px}
+.kicker{display:inline-flex;background:#ecfdf5;color:#15603a;border:1px solid #bde8cc;border-radius:999px;padding:6px 11px;font-size:13px;font-weight:900}
+h1{margin:14px 0 12px;font-size:clamp(32px,5vw,58px);line-height:1.08;letter-spacing:-.04em}
+.lead{color:var(--muted)}
+.hero-copy .btn{margin-top:10px}
+.hero-photo figure{margin:0}
+.hero-photo img{width:100%;height:320px;object-fit:cover;border-radius:20px;border:1px solid var(--line);display:block;background:#eef4fb}
+.hero-photo figcaption{font-size:12px;color:var(--muted);margin-top:8px}
+.section{padding:14px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:0 10px 30px rgba(22,31,52,.04)}
+.head h2{font-size:28px;letter-spacing:-.03em;margin:0 0 6px}
+.head p{margin:0;color:var(--muted)}
+.form{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+label{display:block;font-size:13px;font-weight:900;color:#29415f;margin:0 0 6px}
+select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--text);font:inherit}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.notice{margin-top:14px;background:#f8fbff;border:1px solid var(--line);border-radius:16px;padding:12px;color:var(--muted);font-size:14px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.metric{border:1px solid var(--line);background:#fbfdff;border-radius:18px;padding:16px}
+.metric span{display:block;color:var(--muted);font-size:13px}
+.metric strong{display:block;margin-top:8px;font-size:36px;line-height:1.1}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;border:1px solid var(--pill-b);background:var(--pill);border-radius:999px;padding:8px 12px;font-weight:900;font-size:14px}
+.chip.warn{background:var(--warn);border-color:var(--warn-b)}
+.top4-title{margin:8px 0 10px}
+.top4-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:4px 0 18px}
+.top4-card{border:2px solid #cbe7ff;background:linear-gradient(180deg,#fafdff,#eef8ff);border-radius:20px;padding:14px}
+.top4-card strong{display:block;font-size:28px;line-height:1.1}
+.top4-card .sub{display:block;font-size:13px;color:#0f4e7a;font-weight:900;margin-top:6px}
+.top4-card .rank{display:inline-flex;margin-top:8px;border-radius:999px;padding:4px 8px;background:#fff;border:1px solid var(--line);font-size:12px;font-weight:900}
+.top4-card p{margin:10px 0 0;font-size:13px;line-height:1.55;color:var(--muted)}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px;background:#fff}
+table{width:100%;min-width:700px;border-collapse:collapse}
+th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:#f8fbff;color:#26425f;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.rank-pill{display:inline-flex;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:900;border:1px solid var(--line);background:#fff}
+.ticket-block{margin-top:8px}
+.ticket-block b{display:block;margin-bottom:8px}
+.text{background:#fbfdff;border:1px solid var(--line);border-radius:18px;padding:14px}
+footer{margin-top:22px;border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px}
+@media (max-width: 980px){
+  .hero-grid,.form,.metrics,.top4-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width: 700px){
+  .hero-grid,.form,.metrics,.top4-grid{grid-template-columns:1fr}
+  .logo{font-size:19px}
+  h1{font-size:34px}
+  .hero-photo img{height:220px}
+}
 </style>
 </head>
 <body>
-<header><div class="wrap nav"><div class="logo">ボートAIリスク研究所</div><a href="#search" class="btn">無料で試す</a></div></header>
+<header>
+  <div class="wrap nav">
+    <div class="logo">ボートAIリスク研究所</div>
+    <a href="#search" class="btn btn-primary">無料で試す</a>
+  </div>
+</header>
+
 <main>
-<section class="hero"><div class="wrap hero-grid"><div><div class="notice" style="display:inline-block;margin:0 0 16px">人気に乗る前に、リスクを見る。</div><h1>危険人気を見抜く<br><span class="grad">ボートAI分析予想サイト</span></h1><p class="lead">登録済みのAI検証用データから、日付・場・Rを選ぶだけで診断結果を表示します。1号艇信頼度、荒れ度、危険人気、艇別リスク、本命・抑え候補を予想材料として整理します。</p><p><a class="btn" href="#search">今日のAI診断を見る</a></p></div><div class="card"><h3>今日の人気リスク診断</h3><div class="risk"><div><span>1号艇信頼度</span><b>0〜100</b></div><div><span>荒れ度</span><b>0〜100</b></div><div><span>危険人気候補</span><b class="warn">AI判定</b></div><div><span>艇別リスク</span><b>S〜D評価</b></div></div></div></div></section>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="kicker">人気に乗る前に、リスクを見る。</span>
+        <h1>危険人気・AI上位4艇・艇別リスクを<br>ひと目で確認</h1>
+        <p class="lead">
+          ボートAIリスク研究所は、全レースを対象に
+          <b>1号艇信頼度</b>、<b>荒れ度</b>、<b>危険人気候補</b>、<b>AI上位4艇</b>、
+          <b>艇別リスク</b>、<b>本命5点</b>、<b>抑え3点</b>を整理する無料AI診断サイトです。
+        </p>
+        <a href="#search" class="btn btn-primary">今日のレースを選ぶ</a>
+      </div>
+      <div class="hero-photo">
+        <figure>
+          <img
+            src="hero-boat.jpg"
+            alt="ボートレースのイメージ"
+            onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 700%22><defs><linearGradient id=%22g%22 x1=%220%22 x2=%221%22 y1=%220%22 y2=%221%22><stop offset=%220%25%22 stop-color=%22%2308b9ff%22/><stop offset=%22100%25%22 stop-color=%22%236de5a8%22/></linearGradient></defs><rect width=%221200%22 height=%22700%22 fill=%22%23eaf7ff%22/><rect y=%22430%22 width=%221200%22 height=%22270%22 fill=%22url(%23g)%22 opacity=%220.9%22/><path d=%22M0 470 C150 430 250 510 400 470 S650 430 820 475 1030 520 1200 470 L1200 700 L0 700 Z%22 fill=%22%23baf1ff%22/><path d=%22M175 380 l130 -35 65 25 -95 35 z%22 fill=%22%23ffffff%22 stroke=%22%230f172a%22 stroke-width=%223%22/><path d=%22M315 347 l30 -70 40 48 z%22 fill=%22%23ffffff%22 stroke=%22%230f172a%22 stroke-width=%223%22/><circle cx=%22195%22 cy=%22396%22 r=%229%22 fill=%22%23ff4545%22/><path d=%22M500 355 l145 -40 70 26 -104 38 z%22 fill=%22%23ffffff%22 stroke=%22%230f172a%22 stroke-width=%223%22/><path d=%22M650 318 l34 -77 44 52 z%22 fill=%22%23ffffff%22 stroke=%22%230f172a%22 stroke-width=%223%22/><circle cx=%22528%22 cy=%22372%22 r=%229%22 fill=%22%2300a2ff%22/><path d=%22M830 390 l150 -44 74 28 -107 40 z%22 fill=%22%23ffffff%22 stroke=%22%230f172a%22 stroke-width=%223%22/><path d=%22M985 348 l36 -83 49 56 z%22 fill=%22%23ffffff%22 stroke=%22%230f172a%22 stroke-width=%223%22/><circle cx=%22863%22 cy=%22407%22 r=%229%22 fill=%22%23ffc400%22/><text x=%2260%22 y=%22110%22 font-size=%2254%22 font-family=%22Arial, sans-serif%22 font-weight=%22700%22 fill=%22%230f172a%22>BOAT RACE AI RISK LAB</text><text x=%2260%22 y=%22162%22 font-size=%2228%22 font-family=%22Arial, sans-serif%22 fill=%22%23455a77%22>hero-boat.jpg を置くとここが写真に変わります</text></svg>';">
+          <figcaption>※ GitHubに <b>hero-boat.jpg</b> を追加すると、ここを本物のボート写真に差し替えできます。</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
 
-<section id="search"><div class="wrap"><div class="head"><h2>AIリスク診断を選択</h2><p>登録済みデータから、日付・場・Rを順番に選んでください。</p></div><div class="card"><div class="form"><div><label>日付を選択</label><select id="dateSelect" onchange="onDateChange()"><option>読み込み中...</option></select></div><div><label>場を選択</label><select id="placeSelect" onchange="onPlaceChange()"><option>日付を選択してください</option></select></div><div><label>Rを選択</label><select id="raceSelect" onchange="onRaceChange()"><option>場を選択してください</option></select></div></div><div class="actions"><button class="btn" onclick="showSelectedRace()">このレースを見る</button><button class="btn sub" onclick="showAll()">登録レース一覧</button></div><div id="status" class="notice">データ読み込み中...</div><div id="result" class="card result"></div></div></div></section>
+  <section id="search" class="section">
+    <div class="wrap">
+      <div class="card">
+        <div class="head">
+          <h2>AIリスク診断を選択</h2>
+          <p>日付・場・Rを選ぶだけで診断結果を表示します。</p>
+        </div>
+        <div class="form" style="margin-top:14px">
+          <div>
+            <label>日付を選択</label>
+            <select id="dateSelect" onchange="onDateChange()"><option>読み込み中...</option></select>
+          </div>
+          <div>
+            <label>場を選択</label>
+            <select id="placeSelect" onchange="onPlaceChange()"><option>日付を選択してください</option></select>
+          </div>
+          <div>
+            <label>Rを選択</label>
+            <select id="raceSelect" onchange="onRaceChange()"><option>場を選択してください</option></select>
+          </div>
+          <div>
+            <label>一括確認</label>
+            <button class="btn btn-ghost" style="width:100%" onclick="showAll()">登録レース一覧</button>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="showSelectedRace()">このレースを見る</button>
+        </div>
+        <div id="status" class="notice">race-data.json を読み込みます。</div>
+      </div>
+    </div>
+  </section>
 
-<section><div class="wrap"><div class="head"><h2>予想を売るだけではなく、人気リスクを見える化する。</h2><p>公式出走表にある数字をそのまま並べるのではなく、予想前に確認したいリスクを指数化します。</p></div><div class="grid3"><div class="card"><h3>危険人気チェック</h3><p class="lead">人気している艇や買い目に、ST・モーター・展示・枠の不安がないかを整理。</p></div><div class="card"><h3>艇別リスク</h3><p class="lead">1〜6号艇を役割・評価ランク・リスク内容で整理。</p></div><div class="card"><h3>本命・抑えを整理</h3><p class="lead">本命5点・抑え3点をAI独自指数順で表示。</p></div></div></div></section>
-</main><footer><div class="wrap">© 2026 ボートAIリスク研究所｜本サイトは予想材料の提供を目的とし、的中や利益を保証するものではありません。</div></footer>
+  <section class="section">
+    <div class="wrap">
+      <div id="result" class="card" style="display:none"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    © 2026 ボートAIリスク研究所｜本サイトは予想材料の提供を目的とし、的中や利益を保証するものではありません。
+  </div>
+</footer>
 
 <script>
-let raceData=[];
+let raceData = [];
+
 async function loadData(){
   try{
-    const res=await fetch('race-data.json?ts='+Date.now());
-    if(!res.ok)throw new Error();
-    const data=await res.json();
-    raceData=Array.isArray(data)?data:(data.races||[]);
-    document.getElementById('status').textContent='登録済みレース：'+raceData.length+'件';
+    const res = await fetch('race-data.json?ts=' + Date.now());
+    if(!res.ok) throw new Error();
+    const data = await res.json();
+    raceData = Array.isArray(data) ? data : (data.races || []);
+    document.getElementById('status').textContent = '登録済みレース：' + raceData.length + '件';
     setupDates();
   }catch(e){
-    document.getElementById('status').textContent='race-data.jsonを読み込めませんでした。ファイル名が race-data.json になっているか確認してください。';
-    document.getElementById('dateSelect').innerHTML='<option value="">データなし</option>';
+    document.getElementById('status').textContent = 'race-data.json を読み込めませんでした。ファイル名やJSON形式を確認してください。';
+    document.getElementById('dateSelect').innerHTML = '<option value="">データなし</option>';
   }
 }
-function unique(arr){return [...new Set(arr.filter(Boolean))];}
+
+function unique(arr){ return [...new Set(arr.filter(Boolean))]; }
+function raceNum(s){ const m = String(s||'').match(/\d+/); return m ? Number(m[0]) : 999; }
+function esc(v){ return String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
+function rankClass(rank){ return String(rank||''); }
+
 function setupDates(){
-  const dates=unique(raceData.map(r=>r.date)).sort();
-  const s=document.getElementById('dateSelect');
-  s.innerHTML='<option value="">日付を選択</option>'+dates.map(d=>'<option value="'+esc(d)+'">'+esc(d)+'</option>').join('');
-  if(dates.length===1){s.value=dates[0];onDateChange();}
+  const dates = unique(raceData.map(r => r.date)).sort();
+  const s = document.getElementById('dateSelect');
+  s.innerHTML = '<option value="">日付を選択</option>' + dates.map(d => `<option value="${esc(d)}">${esc(d)}</option>`).join('');
+  if(dates.length === 1){ s.value = dates[0]; onDateChange(); }
 }
 function onDateChange(){
-  const date=document.getElementById('dateSelect').value;
-  const places=unique(raceData.filter(r=>r.date===date).map(r=>r.place)).sort();
-  document.getElementById('placeSelect').innerHTML='<option value="">場を選択</option>'+places.map(p=>'<option value="'+esc(p)+'">'+esc(p)+'</option>').join('');
-  document.getElementById('raceSelect').innerHTML='<option value="">場を選択してください</option>';
-  if(places.length===1){document.getElementById('placeSelect').value=places[0];onPlaceChange();}
+  const date = document.getElementById('dateSelect').value;
+  const places = unique(raceData.filter(r => r.date === date).map(r => r.place)).sort();
+  document.getElementById('placeSelect').innerHTML = '<option value="">場を選択</option>' + places.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
+  document.getElementById('raceSelect').innerHTML = '<option value="">場を選択してください</option>';
+  if(places.length === 1){ document.getElementById('placeSelect').value = places[0]; onPlaceChange(); }
 }
 function onPlaceChange(){
-  const date=document.getElementById('dateSelect').value;
-  const place=document.getElementById('placeSelect').value;
-  const races=raceData.filter(r=>r.date===date&&r.place===place).sort((a,b)=>raceNum(a.race_no)-raceNum(b.race_no));
-  document.getElementById('raceSelect').innerHTML='<option value="">Rを選択</option>'+races.map((r)=>'<option value="'+raceData.indexOf(r)+'">'+esc(r.race_no)+'</option>').join('');
-  if(races.length===1){document.getElementById('raceSelect').value=raceData.indexOf(races[0]);onRaceChange();}
+  const date = document.getElementById('dateSelect').value;
+  const place = document.getElementById('placeSelect').value;
+  const races = raceData.filter(r => r.date === date && r.place === place).sort((a,b) => raceNum(a.race_no) - raceNum(b.race_no));
+  document.getElementById('raceSelect').innerHTML = '<option value="">Rを選択</option>' + races.map(r => `<option value="${raceData.indexOf(r)}">${esc(r.race_no)}</option>`).join('');
+  if(races.length === 1){ document.getElementById('raceSelect').value = raceData.indexOf(races[0]); onRaceChange(); }
 }
-function onRaceChange(){const idx=document.getElementById('raceSelect').value;if(idx!=='')render(raceData[Number(idx)]);}
-function showSelectedRace(){const idx=document.getElementById('raceSelect').value;if(idx==='')return message('日付・場・Rを選択してください。');render(raceData[Number(idx)]);}
-function showAll(){if(!raceData.length)return message('登録済みレースはありません。');show('<h3>登録レース一覧</h3><div class="chips">'+raceData.map((r,i)=>'<button class="chip" onclick="render(raceData['+i+'])">'+esc(r.date)+' '+esc(r.place)+' '+esc(r.race_no)+'</button>').join('')+'</div>');}
-function render(r){
-  show('<h3>'+esc(r.date)+' '+esc(r.place)+' '+esc(r.race_no)+' AIリスク診断</h3>'+
-  '<div class="metrics"><div class="metric"><span>1号艇信頼度</span><strong>'+esc(r.first_boat_reliability??'-')+'</strong></div><div class="metric"><span>荒れ度</span><strong>'+esc(r.roughness??'-')+'</strong></div><div class="metric"><span>勝負度/慎重度</span><strong>'+esc(r.risk_level||'-')+'</strong></div><div class="metric"><span>締切</span><strong>'+esc(r.deadline||'-')+'</strong></div></div>'+
-  '<p><b>危険人気候補</b></p><div class="chips">'+danger(r)+'</div>'+
-  boatRisks(r)+
-  '<p><b>本命5点</b></p><div class="chips">'+chips(r.main_tickets,false)+'</div>'+
-  '<p><b>抑え3点</b></p><div class="chips">'+chips(r.hole_tickets,true)+'</div>'+
-  '<p><b>短評</b></p><div class="text">'+esc(r.summary||'登録なし')+'</div>'+
-  (r.analysis_text?'<p><b>詳細メモ</b></p><div class="text">'+esc(r.analysis_text)+'</div>':''));
+function onRaceChange(){
+  const idx = document.getElementById('raceSelect').value;
+  if(idx !== '') render(raceData[Number(idx)]);
 }
+function showSelectedRace(){
+  const idx = document.getElementById('raceSelect').value;
+  if(idx === '') return message('日付・場・Rを選択してください。');
+  render(raceData[Number(idx)]);
+}
+function showAll(){
+  if(!raceData.length) return message('登録済みレースはありません。');
+  show('<h3>登録レース一覧</h3><div class="chips">' + raceData.map((r,i) => `<button class="chip" onclick="render(raceData[${i}])">${esc(r.date)} ${esc(r.place)} ${esc(r.race_no)}</button>`).join('') + '</div>');
+}
+
+function top4Boats(r){
+  const list = r.top4_boats || r.top4Boats || [];
+  if(!Array.isArray(list) || !list.length) return '';
+  return '<div class="top4-title"><b>AI上位4艇</b></div><div class="top4-grid">' +
+    list.slice(0,4).map(x =>
+      '<div class="top4-card">' +
+      '<strong>' + esc(x.boat) + '号艇</strong>' +
+      '<span class="sub">' + esc(x.label || x.role || '') + '</span>' +
+      '<span class="rank">' + esc(x.rank || '') + '</span>' +
+      '<p>' + esc(x.reason || x.note || x.risk_note || '') + '</p>' +
+      '</div>'
+    ).join('') +
+  '</div>';
+}
+
+function danger(r){
+  const a = r.danger_popular_boats || [];
+  return a.length ? a.map(x => `<span class="chip warn">${esc(x.boat)}号艇：${esc(x.reason || '')}</span>`).join('') : '<span class="chip">なし</span>';
+}
+
 function boatRisks(r){
   let list = r.boat_risks || r.boatRisks || [];
   if(!list.length && Array.isArray(r.entries)){
-    list = r.entries.filter(e=>e.role||e.rank||e.risk_note).map(e=>({boat:e.boat_no||e.frame,role:e.role||'',rank:e.rank||'',risk_note:e.risk_note||''}));
+    list = r.entries.filter(e => e.role || e.rank || e.risk_note).map(e => ({
+      boat: e.boat_no || e.frame, role: e.role || '', rank: e.rank || '', risk_note: e.risk_note || ''
+    }));
   }
-  if(!list.length)return '';
-  return '<p><b>艇別リスク</b></p><div class="boat-risk-wrap"><table class="boat-risk-table"><thead><tr><th>艇</th><th>役割</th><th>評価ランク</th><th>リスク内容</th></tr></thead><tbody>'+
-    list.map(x=>'<tr><td>'+esc(x.boat)+'号艇</td><td>'+esc(x.role||'')+'</td><td><span class="rank '+rankClass(x.rank)+'">'+esc(x.rank||'-')+'</span></td><td>'+esc(x.risk_note||x.note||'')+'</td></tr>').join('')+
+  if(!list.length) return '';
+  return '<p><b>艇別リスク</b></p><div class="table-wrap"><table><thead><tr><th>艇</th><th>役割</th><th>評価ランク</th><th>リスク内容</th></tr></thead><tbody>' +
+    list.map(x => `<tr><td>${esc(x.boat)}号艇</td><td>${esc(x.role || '')}</td><td><span class="rank-pill">${esc(x.rank || '-')}</span></td><td>${esc(x.risk_note || x.note || '')}</td></tr>`).join('') +
     '</tbody></table></div>';
 }
-function rankClass(rank){return String(rank||'').replace('+','plus').replace(/[^A-Za-z0-9-]/g,'');}
-function danger(r){const a=r.danger_popular_boats||[];return a.length?a.map(x=>'<span class="chip warn">'+esc(x.boat)+'号艇：'+esc(x.reason||'')+'</span>').join(''):'<span class="chip">なし</span>';}
-function chips(a,w){return Array.isArray(a)&&a.length?a.map(x=>'<span class="chip '+(w?'warn':'')+'">'+esc(x)+'</span>').join(''):'<span class="chip">未登録</span>';}
-function message(m){show('<div class="notice">'+esc(m)+'</div>');}
-function show(h){const el=document.getElementById('result');el.style.display='block';el.innerHTML=h;el.scrollIntoView({behavior:'smooth',block:'start'});}
-function raceNum(s){const m=String(s||'').match(/\d+/);return m?Number(m[0]):999;}
-function esc(v){return String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;");}
+
+function chips(a, warn){
+  return Array.isArray(a) && a.length ? a.map(x => `<span class="chip ${warn ? 'warn' : ''}">${esc(x)}</span>`).join('') : '<span class="chip">未登録</span>';
+}
+
+function render(r){
+  show(
+    '<h2 style="margin:0 0 6px">' + esc(r.date) + ' ' + esc(r.place) + ' ' + esc(r.race_no) + ' AIリスク診断</h2>' +
+    '<div class="metrics">' +
+      '<div class="metric"><span>1号艇信頼度</span><strong>' + esc(r.first_boat_reliability ?? '-') + '</strong></div>' +
+      '<div class="metric"><span>荒れ度</span><strong>' + esc(r.roughness ?? '-') + '</strong></div>' +
+      '<div class="metric"><span>勝負度/慎重度</span><strong style="font-size:26px">' + esc(r.risk_level || '-') + '</strong></div>' +
+      '<div class="metric"><span>締切</span><strong style="font-size:26px">' + esc(r.deadline || '-') + '</strong></div>' +
+    '</div>' +
+    top4Boats(r) +
+    '<p><b>危険人気候補</b></p><div class="chips">' + danger(r) + '</div>' +
+    boatRisks(r) +
+    '<div class="ticket-block"><b>本命5点</b><div class="chips">' + chips(r.main_tickets, false) + '</div></div>' +
+    '<div class="ticket-block"><b>抑え3点</b><div class="chips">' + chips(r.hole_tickets, true) + '</div></div>' +
+    '<div class="ticket-block"><b>短評</b><div class="text">' + esc(r.summary || '登録なし') + '</div></div>' +
+    (r.analysis_text ? '<div class="ticket-block"><b>詳細メモ</b><div class="text">' + esc(r.analysis_text) + '</div></div>' : '')
+  );
+}
+function message(m){ show('<div class="notice">' + esc(m) + '</div>'); }
+function show(h){ const el = document.getElementById('result'); el.style.display='block'; el.innerHTML=h; el.scrollIntoView({behavior:'smooth', block:'start'}); }
+
 loadData();
 </script>
+
 <!-- Cloudflare Web Analytics -->
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "906f36822afe4132aee6d81b1c8296d4"}'></script>
 <!-- End Cloudflare Web Analytics -->
-</body></html>
+
+</body>
+</html>
