@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ボートAIリスク研究所｜危険人気を見抜くAI分析予想サイト</title>
+  <meta name="description" content="ボートAIリスク研究所は、出走表だけでは見えにくい人気リスク・1号艇信頼度・荒れ度・穴候補をAIで整理するボートレース分析サイトです。" />
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg-soft: #0d1b2f;
+      --card: #10243d;
+      --card-2: #132b49;
+      --line: rgba(255,255,255,.12);
+      --text: #f4f8ff;
+      --muted: #a9b7c9;
+      --accent: #2fe3ff;
+      --accent-2: #7cf7b5;
+      --danger: #ffcc66;
+      --warn: #ff7a7a;
+      --ok: #7cf7b5;
+      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(47,227,255,.16), transparent 32%),
+        radial-gradient(circle at top right, rgba(124,247,181,.13), transparent 28%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: rgba(7,17,31,.78);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: .03em;
+    }
+
+    .logo-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: grid;
+      place-items: center;
+      color: #07111f;
+      font-weight: 900;
+      box-shadow: 0 0 24px rgba(47,227,255,.38);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: .2s ease;
+      white-space: nowrap;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #04111d;
+      box-shadow: 0 12px 30px rgba(47,227,255,.22);
+    }
+
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 42px rgba(47,227,255,.32); }
+    .btn-ghost { border-color: var(--line); color: var(--text); background: rgba(255,255,255,.04); }
+    .btn-ghost:hover { background: rgba(255,255,255,.08); }
+    .btn-small { padding: 9px 14px; font-size: 13px; }
+
+    .hero { padding: 86px 0 56px; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid rgba(47,227,255,.26);
+      background: rgba(47,227,255,.08);
+      border-radius: 999px;
+      color: #bdf7ff;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(36px, 6vw, 66px);
+      line-height: 1.08;
+      margin: 0 0 20px;
+      letter-spacing: -.05em;
+    }
+
+    .grad {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 640px;
+      margin: 0 0 28px;
+    }
+
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
+
+    .trust-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+      max-width: 640px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.045);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .mini-card strong { display: block; font-size: 20px; line-height: 1.2; }
+    .mini-card span { color: var(--muted); font-size: 12px; }
+
+    .dashboard-card {
+      border: 1px solid rgba(47,227,255,.18);
+      background: linear-gradient(180deg, rgba(16,36,61,.94), rgba(13,27,47,.94));
+      border-radius: 30px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard-card::before {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: rgba(47,227,255,.14);
+      right: -120px;
+      top: -120px;
+      filter: blur(6px);
+    }
+
+    .dash-head { position: relative; display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 18px; }
+    .dash-title { font-weight: 900; font-size: 18px; }
+    .tag { border: 1px solid var(--line); background: rgba(255,255,255,.06); color: #cfe6ff; border-radius: 999px; padding: 5px 10px; font-size: 12px; font-weight: 800; }
+
+    .score-main {
+      position: relative;
+      display: grid;
+      grid-template-columns: 128px 1fr;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .score-circle {
+      width: 128px;
+      height: 128px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(var(--accent) 0 74%, rgba(255,255,255,.12) 74% 100%);
+      position: relative;
+    }
+    .score-circle::after {
+      content: "";
+      width: 94px;
+      height: 94px;
+      background: var(--card);
+      position: absolute;
+      border-radius: 50%;
+    }
+    .score-circle b { position: relative; z-index: 1; font-size: 34px; line-height: 1; }
+    .score-circle small { position: relative; z-index: 1; color: var(--muted); font-size: 12px; }
+
+    .risk-list { display: grid; gap: 10px; }
+    .risk-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      border-radius: 16px;
+      padding: 12px;
+      font-size: 14px;
+    }
+    .risk-item span { color: var(--muted); }
+    .risk-item b.warn { color: var(--danger); }
+    .risk-item b.ok { color: var(--ok); }
+
+    .tickets {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .ticket-box {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(0,0,0,.13);
+    }
+    .ticket-box h4 { margin: 0 0 8px; font-size: 14px; color: #d8edff; }
+    .ticket-list { display: flex; flex-wrap: wrap; gap: 7px; }
+    .ticket { padding: 4px 8px; border-radius: 999px; background: rgba(47,227,255,.12); border: 1px solid rgba(47,227,255,.24); font-weight: 800; font-size: 13px; }
+    .ticket.hole { background: rgba(255,204,102,.10); border-color: rgba(255,204,102,.28); }
+
+    section { padding: 66px 0; }
+    .section-head { margin-bottom: 26px; }
+    .section-head h2 { font-size: clamp(28px, 4vw, 44px); line-height: 1.15; letter-spacing: -.04em; margin: 0 0 12px; }
+    .section-head p { color: var(--muted); margin: 0; max-width: 760px; }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+
+    .feature-card, .flow-card, .price-card {
+      border: 1px solid var(--line);
+      background: rgba(16,36,61,.72);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: 0 12px 34px rgba(0,0,0,.16);
+    }
+    .feature-card h3, .flow-card h3, .price-card h3 { margin: 0 0 10px; font-size: 20px; }
+    .feature-card p, .flow-card p, .price-card p { color: var(--muted); margin: 0; font-size: 14px; }
+    .icon { width: 46px; height: 46px; border-radius: 16px; display: grid; place-items: center; background: rgba(47,227,255,.12); border: 1px solid rgba(47,227,255,.22); margin-bottom: 14px; font-size: 22px; }
+
+    .tool-wrap {
+      border: 1px solid rgba(47,227,255,.2);
+      background: rgba(16,36,61,.78);
+      border-radius: 30px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    label { display: block; color: #d8edff; font-size: 13px; font-weight: 800; margin-bottom: 6px; }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px;
+      font: inherit;
+      outline: none;
+    }
+    textarea { min-height: 120px; resize: vertical; }
+    input:focus, textarea:focus, select:focus { border-color: rgba(47,227,255,.55); box-shadow: 0 0 0 4px rgba(47,227,255,.08); }
+
+    .tool-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0; }
+
+    .copy-box {
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.22);
+      border-radius: 18px;
+      padding: 14px;
+      min-height: 180px;
+      white-space: pre-wrap;
+      color: #dceeff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      overflow: auto;
+    }
+
+    .notice {
+      border: 1px solid rgba(255,204,102,.22);
+      background: rgba(255,204,102,.08);
+      color: #ffe5ad;
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 13px;
+      margin-top: 14px;
+    }
+
+    .result-area {
+      margin-top: 26px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .result-panel {
+      border: 1px solid rgba(47,227,255,.18);
+      background: rgba(0,0,0,.16);
+      border-radius: 20px;
+      padding: 16px;
+      min-height: 180px;
+    }
+
+    .result-panel h3 { margin: 0 0 12px; font-size: 17px; }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.045);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .metric span { display: block; color: var(--muted); font-size: 12px; margin-bottom: 4px; }
+    .metric strong { font-size: 22px; line-height: 1.1; }
+
+    .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 14px; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(47,227,255,.24);
+      background: rgba(47,227,255,.10);
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .chip.warn { border-color: rgba(255,204,102,.30); background: rgba(255,204,102,.10); }
+
+    .saved-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+      max-height: 240px;
+      overflow: auto;
+    }
+
+    .saved-item {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      border-radius: 14px;
+      padding: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .saved-item b { color: var(--text); }
+
+    .price-card.highlight {
+      border-color: rgba(47,227,255,.42);
+      background: linear-gradient(180deg, rgba(47,227,255,.10), rgba(16,36,61,.78));
+    }
+    .price { font-size: 34px; font-weight: 900; margin: 12px 0; letter-spacing: -.04em; }
+    .price small { font-size: 13px; color: var(--muted); font-weight: 700; }
+    ul.clean { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 8px; color: var(--muted); font-size: 14px; }
+    ul.clean li::before { content: "✓"; color: var(--accent-2); font-weight: 900; margin-right: 8px; }
+
+    footer { border-top: 1px solid var(--line); padding: 34px 0; color: var(--muted); font-size: 13px; }
+    .footer-grid { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+
+    @media (max-width: 900px) {
+      .hero-grid, .grid-3, .grid-2, .result-grid { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: repeat(2, 1fr); }
+      .nav-links { display: none; }
+      .score-main { grid-template-columns: 1fr; justify-items: center; }
+      .tickets { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      .hero { padding-top: 54px; }
+      .trust-row, .form-grid { grid-template-columns: 1fr; }
+      .btn { width: 100%; }
+      .hero-actions { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a href="#top" class="logo">
+        <span class="logo-mark">B</span>
+        <span>ボートAIリスク研究所</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#features">特徴</a>
+        <a href="#tool">分析ツール</a>
+        <a href="#flow">使い方</a>
+        <a href="#pricing">料金案</a>
+      </nav>
+      <a class="btn btn-primary btn-small" href="#tool">無料で試す</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">人気に乗る前に、リスクを見る。</div>
+          <h1>危険人気を見抜く<br><span class="grad">ボートAI分析予想サイト</span></h1>
+          <p>
+            ボートAIリスク研究所は、出走表・ST・モーター・展示情報をもとに、
+            1号艇信頼度、荒れ度、人気リスク、穴候補を整理する分析サイトです。
+            「買わない理由」ではなく、予想を立てるための判断材料を出します。
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#tool">ChatGPT用プロンプトを作る</a>
+            <a class="btn btn-ghost" href="#features">サービスを見る</a>
+          </div>
+          <div class="trust-row">
+            <div class="mini-card"><strong>1号艇</strong><span>信頼度を数値化</span></div>
+            <div class="mini-card"><strong>危険人気</strong><span>過剰人気をチェック</span></div>
+            <div class="mini-card"><strong>穴候補</strong><span>根拠ある相手を整理</span></div>
+          </div>
+        </div>
+
+        <div class="dashboard-card" aria-label="分析結果サンプル">
+          <div class="dash-head">
+            <div>
+              <div class="dash-title">唐津1R 人気リスク診断</div>
+              <div style="color: var(--muted); font-size: 13px;">サンプル表示</div>
+            </div>
+            <span class="tag">勝負度 B</span>
+          </div>
+          <div class="score-main">
+            <div class="score-circle"><div><b>74</b><br><small>1号艇信頼度</small></div></div>
+            <div class="risk-list">
+              <div class="risk-item"><span>荒れ度</span><b class="ok">36 / 100</b></div>
+              <div class="risk-item"><span>危険人気候補</span><b class="warn">2号艇</b></div>
+              <div class="risk-item"><span>穴で残すなら</span><b>6号艇3着</b></div>
+              <div class="risk-item"><span>慎重度</span><b>42 / 100</b></div>
+            </div>
+          </div>
+          <div class="tickets">
+            <div class="ticket-box">
+              <h4>本命5点</h4>
+              <div class="ticket-list">
+                <span class="ticket">1-2-3</span><span class="ticket">1-2-6</span><span class="ticket">1-3-2</span><span class="ticket">1-3-6</span><span class="ticket">1-2-4</span>
+              </div>
+            </div>
+            <div class="ticket-box">
+              <h4>穴3点</h4>
+              <div class="ticket-list">
+                <span class="ticket hole">2-1-3</span><span class="ticket hole">2-1-6</span><span class="ticket hole">1-6-2</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="container">
+        <div class="section-head">
+          <h2>予想を売るだけではなく、<br>人気リスクを見える化する。</h2>
+          <p>
+            公式出走表にある数字をそのまま並べるのではなく、予想前に確認したいリスクを指数化。
+            ユーザーは買い目の材料を得られ、運営側は分析データを蓄積できます。
+          </p>
+        </div>
+        <div class="grid-3">
+          <div class="feature-card">
+            <div class="icon">⚠️</div>
+            <h3>危険人気チェック</h3>
+            <p>人気している艇や買い目に、ST・モーター・展示・枠の不安がないかを整理します。</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">📊</div>
+            <h3>1号艇信頼度</h3>
+            <p>イン有利だけで決めず、平均ST・モーター・当地成績・展示気配から信頼度を数値化します。</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">🎯</div>
+            <h3>本命・穴を整理</h3>
+            <p>本命5点・穴3点をAI独自指数順で表示。オッズだけに引っ張られない買い目整理を狙います。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tool">
+      <div class="container">
+        <div class="section-head">
+          <h2>半自動分析ツール</h2>
+          <p>
+            APIなしで運用できる形です。レース情報を入力すると、ChatGPTに貼るための分析プロンプトを生成します。
+            ChatGPTの回答をサイトへ貼り戻せば、JSON/CSVでデータ蓄積できます。
+          </p>
+        </div>
+
+        <div class="tool-wrap">
+          <div class="form-grid">
+            <div>
+              <label for="date">日付</label>
+              <input id="date" type="date" />
+            </div>
+            <div>
+              <label for="place">場</label>
+              <input id="place" placeholder="例：唐津" />
+            </div>
+            <div>
+              <label for="raceNo">R</label>
+              <input id="raceNo" placeholder="例：1R" />
+            </div>
+            <div>
+              <label for="deadline">締切</label>
+              <input id="deadline" placeholder="例：08:32" />
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div>
+              <label for="raceData">出走表・展示・水面データ</label>
+              <textarea id="raceData" placeholder="ここに出走表、平均ST、全国/当地3連率、モーター2連率/3連率、展示ST、展示タイム、水面情報、オッズなどを貼り付け"></textarea>
+            </div>
+            <div>
+              <label for="memo">補足メモ</label>
+              <textarea id="memo" placeholder="例：1号艇は人気しそう。2号艇のSTが不安。6号艇は地元。展示後に補正予定など"></textarea>
+            </div>
+          </div>
+
+          <div class="tool-actions">
+            <button class="btn btn-primary" onclick="generatePrompt()">ChatGPT用プロンプト生成</button>
+            <button class="btn btn-ghost" onclick="copyPrompt()">プロンプトをコピー</button>
+            <button class="btn btn-ghost" onclick="clearForm()">入力をクリア</button>
+          </div>
+
+          <label for="promptOutput">生成されたプロンプト</label>
+          <div id="promptOutput" class="copy-box">ここにChatGPTへ貼るプロンプトが表示されます。</div>
+
+          <div class="notice">
+            ※ この初期版は、ChatGPT画面に貼り付けて使う半自動運用を想定しています。将来的にはAPI連携・DB保存・有料会員機能へ拡張できます。
+          </div>
+
+          <div class="result-area">
+            <div class="section-head" style="margin-bottom: 16px;">
+              <h2 style="font-size: 28px;">分析結果を貼り戻して保存</h2>
+              <p>ChatGPTの回答末尾に出たJSONを貼ると、LP側で自動整形してプレビュー表示できます。保存データはブラウザ内に残り、JSON/CSVで書き出せます。</p>
+            </div>
+
+            <div class="result-grid">
+              <div>
+                <label for="jsonInput">ChatGPTのJSON貼り付け欄</label>
+                <textarea id="jsonInput" placeholder='{"date":"2026-05-23","place":"唐津","race_no":"1R","first_boat_reliability":74,"roughness":36,"danger_popular_boats":[{"boat":2,"reason":"ST不安"}],"main_tickets":["1-2-3"],"hole_tickets":["2-1-3"],"summary":"1号艇中心"}'></textarea>
+                <div class="tool-actions">
+                  <button class="btn btn-primary" onclick="parseAnalysisJson()">JSONを読み取る</button>
+                  <button class="btn btn-ghost" onclick="saveAnalysis()">この分析を保存</button>
+                  <button class="btn btn-ghost" onclick="downloadJson()">JSON出力</button>
+                  <button class="btn btn-ghost" onclick="downloadCsv()">CSV出力</button>
+                </div>
+              </div>
+
+              <div class="result-panel">
+                <h3>分析プレビュー</h3>
+                <div id="analysisPreview" style="color: var(--muted); font-size: 14px;">ここに読み取り結果が表示されます。</div>
+              </div>
+            </div>
+
+            <div class="result-panel" style="margin-top: 14px;">
+              <h3>保存済み分析</h3>
+              <div class="tool-actions" style="margin-top: 0;">
+                <button class="btn btn-ghost btn-small" onclick="renderSavedAnalyses()">保存一覧を更新</button>
+                <button class="btn btn-ghost btn-small" onclick="clearSavedAnalyses()">保存データを削除</button>
+              </div>
+              <div id="savedList" class="saved-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="flow">
+      <div class="container">
+        <div class="section-head">
+          <h2>初期運用の流れ</h2>
+          <p>最初から完全自動化せず、ChatGPTを分析エンジンとして使い、サイト側で入力・表示・蓄積の土台を作ります。</p>
+        </div>
+        <div class="grid-3">
+          <div class="flow-card">
+            <div class="icon">1</div>
+            <h3>レース情報を入力</h3>
+            <p>出走表、展示、オッズ、水面情報などを貼り付け、分析用プロンプトを生成します。</p>
+          </div>
+          <div class="flow-card">
+            <div class="icon">2</div>
+            <h3>ChatGPTで分析</h3>
+            <p>生成されたプロンプトをChatGPTに貼り、危険人気・信頼度・本命穴を出します。</p>
+          </div>
+          <div class="flow-card">
+            <div class="icon">3</div>
+            <h3>サイトに保存</h3>
+            <p>分析結果のJSONを貼り戻し、ブラウザ保存・CSV/JSON出力でデータ蓄積できます。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <div class="container">
+        <div class="section-head">
+          <h2>料金設計案</h2>
+          <p>公開初期は無料診断で集客し、詳細分析・展示後補正・注目レースを有料化する形が自然です。</p>
+        </div>
+        <div class="grid-3">
+          <div class="price-card">
+            <h3>無料診断</h3>
+            <div class="price">¥0</div>
+            <p>入口用。記事集客やSNS誘導に使う。</p>
+            <ul class="clean">
+              <li>1号艇信頼度</li>
+              <li>荒れ度</li>
+              <li>危険人気あり/なし</li>
+            </ul>
+          </div>
+          <div class="price-card highlight">
+            <h3>詳細AI分析</h3>
+            <div class="price">¥100〜<small>/1R</small></div>
+            <p>都度課金向け。買い目材料として販売。</p>
+            <ul class="clean">
+              <li>危険人気の理由</li>
+              <li>本命5点＋穴3点</li>
+              <li>相手候補・穴候補</li>
+            </ul>
+          </div>
+          <div class="price-card">
+            <h3>月額プラン</h3>
+            <div class="price">¥980〜<small>/月</small></div>
+            <p>継続利用者向け。将来的に実装。</p>
+            <ul class="clean">
+              <li>注目レース閲覧</li>
+              <li>展示後補正</li>
+              <li>過去指数データ</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>© 2026 ボートAIリスク研究所</div>
+      <div>本サイトは予想材料の提供を目的とし、的中や利益を保証するものではありません。</div>
+    </div>
+  </footer>
+
+  <script>
+    const today = new Date().toISOString().slice(0, 10);
+    document.getElementById('date').value = today;
+    let currentAnalysis = null;
+
+    function generatePrompt() {
+      const NL = String.fromCharCode(10);
+      const date = document.getElementById('date').value || '未入力';
+      const place = document.getElementById('place').value || '未入力';
+      const raceNo = document.getElementById('raceNo').value || '未入力';
+      const deadline = document.getElementById('deadline').value || '未入力';
+      const raceData = document.getElementById('raceData').value || '未入力';
+      const memo = document.getElementById('memo').value || 'なし';
+      const promptLines = [
+        '以下のボートレースを、ボートAIリスク研究所の検証用テンプレで分析してください。',
+        '',
+        '目的は「買わない理由」を出すことではなく、ユーザーが予想を立てるための判断材料として、危険人気・1号艇信頼度・荒れ度・本命/穴候補を整理することです。',
+        '',
+        '【レース基本情報】',
+        '日付：' + date,
+        '場：' + place,
+        'R：' + raceNo,
+        '締切：' + deadline,
+        '',
+        '【出走表・展示・水面データ】',
+        raceData,
+        '',
+        '【補足メモ】',
+        memo,
+        '',
+        '【出力ルール】',
+        '以下の順番を必ず守ってください。',
+        '①レース基本情報',
+        '②出走表主要データ',
+        '③直前情報',
+        '④ST評価',
+        '⑤リスク数値化',
+        '⑥艇別リスク（各艇に評価ランクS/A/B/C/Dを入れる）',
+        '⑦候補分類',
+        '⑧データ取り用買い目（本命5点＋穴3点、内部用予備5点）',
+        '⑨検証ポイント',
+        '⑩結果後検証欄',
+        '',
+        '【特に重視する指標】',
+        '・1号艇信頼度',
+        '・危険人気候補',
+        '・荒れ度',
+        '・見送り指数ではなく、勝負度/慎重度として表現',
+        '・人気に乗る前に確認すべきリスク',
+        '・本命5点＋穴3点はAI独自指数順で並べる',
+        '',
+        '【重要】',
+        '最後に、サイト保存用として必ずJSONだけのコードブロックを出してください。',
+        'JSONは下記キーを必ず含めてください。数値は半角数字、買い目は配列にしてください。',
+        '',
+        '```json',
+        '{',
+        '  "date": "' + date + '",',
+        '  "place": "' + place + '",',
+        '  "race_no": "' + raceNo + '",',
+        '  "deadline": "' + deadline + '",',
+        '  "first_boat_reliability": 0,',
+        '  "roughness": 0,',
+        '  "risk_level": "",',
+        '  "danger_popular_boats": [{"boat": 0, "reason": ""}],',
+        '  "main_tickets": [],',
+        '  "hole_tickets": [],',
+        '  "reserve_tickets": [],',
+        '  "summary": ""',
+        '}',
+        '```'
+      ];
+      document.getElementById('promptOutput').textContent = promptLines.join(NL);
+    }
+
+    async function copyPrompt() {
+      const text = document.getElementById('promptOutput').textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        alert('プロンプトをコピーしました。ChatGPTに貼り付けてください。');
+      } catch (e) {
+        alert('コピーできませんでした。手動で選択してコピーしてください。');
+      }
+    }
+
+    function clearForm() {
+      document.getElementById('place').value = '';
+      document.getElementById('raceNo').value = '';
+      document.getElementById('deadline').value = '';
+      document.getElementById('raceData').value = '';
+      document.getElementById('memo').value = '';
+      document.getElementById('promptOutput').textContent = 'ここにChatGPTへ貼るプロンプトが表示されます。';
+    }
+
+    function extractJson(text) {
+      const trimmed = text.trim();
+      const startFence = trimmed.indexOf('```json');
+      if (startFence >= 0) {
+        const start = trimmed.indexOf('{', startFence);
+        const endFence = trimmed.indexOf('```', start + 1);
+        if (start >= 0 && endFence > start) return trimmed.slice(start, endFence).trim();
+      }
+      const first = trimmed.indexOf('{');
+      const last = trimmed.lastIndexOf('}');
+      if (first >= 0 && last > first) return trimmed.slice(first, last + 1);
+      return trimmed;
+    }
+
+    function normalizeAnalysis(data) {
+      return {
+        date: data.date || '',
+        place: data.place || '',
+        race_no: data.race_no || data.raceNo || '',
+        deadline: data.deadline || '',
+        first_boat_reliability: Number(data.first_boat_reliability || data.firstBoatReliability || 0),
+        roughness: Number(data.roughness || 0),
+        risk_level: data.risk_level || data.riskLevel || '',
+        danger_popular_boats: Array.isArray(data.danger_popular_boats) ? data.danger_popular_boats : [],
+        main_tickets: Array.isArray(data.main_tickets) ? data.main_tickets : [],
+        hole_tickets: Array.isArray(data.hole_tickets) ? data.hole_tickets : [],
+        reserve_tickets: Array.isArray(data.reserve_tickets) ? data.reserve_tickets : [],
+        summary: data.summary || '',
+        saved_at: new Date().toISOString()
+      };
+    }
+
+    function parseAnalysisJson() {
+      const raw = document.getElementById('jsonInput').value;
+      if (!raw.trim()) {
+        alert('ChatGPTのJSONを貼り付けてください。');
+        return;
+      }
+      try {
+        const jsonText = extractJson(raw);
+        const parsed = JSON.parse(jsonText);
+        currentAnalysis = normalizeAnalysis(parsed);
+        renderPreview(currentAnalysis);
+      } catch (error) {
+        alert('JSONの読み取りに失敗しました。ChatGPT回答の最後にあるJSON部分だけを貼ると成功しやすいです。');
+      }
+    }
+
+    function renderPreview(data) {
+      const danger = data.danger_popular_boats.length ? data.danger_popular_boats.map(function(item) {
+        return '<span class="chip warn">' + escapeHtml(item.boat) + '号艇：' + escapeHtml(item.reason || '理由未入力') + '</span>';
+      }).join('') : '<span class="chip">なし</span>';
+      const mainTickets = chips(data.main_tickets, false);
+      const holeTickets = chips(data.hole_tickets, true);
+      const reserveTickets = chips(data.reserve_tickets, false);
+      document.getElementById('analysisPreview').innerHTML =
+        '<div class="metric-grid">' +
+          '<div class="metric"><span>レース</span><strong>' + escapeHtml(data.place) + ' ' + escapeHtml(data.race_no) + '</strong></div>' +
+          '<div class="metric"><span>締切</span><strong>' + escapeHtml(data.deadline || '-') + '</strong></div>' +
+          '<div class="metric"><span>1号艇信頼度</span><strong>' + data.first_boat_reliability + '</strong></div>' +
+          '<div class="metric"><span>荒れ度</span><strong>' + data.roughness + '</strong></div>' +
+        '</div>' +
+        '<p><b>危険人気候補</b></p><div class="chip-row">' + danger + '</div>' +
+        '<p><b>本命5点</b></p><div class="chip-row">' + mainTickets + '</div>' +
+        '<p><b>穴3点</b></p><div class="chip-row">' + holeTickets + '</div>' +
+        '<p><b>内部用予備</b></p><div class="chip-row">' + reserveTickets + '</div>' +
+        '<p><b>要約</b><br>' + escapeHtml(data.summary || '未入力') + '</p>';
+    }
+
+    function chips(list, warn) {
+      if (!Array.isArray(list) || !list.length) return '<span class="chip">未入力</span>';
+      return list.map(function(t) {
+        return '<span class="chip' + (warn ? ' warn' : '') + '">' + escapeHtml(t) + '</span>';
+      }).join('');
+    }
+
+    function getSavedAnalyses() {
+      try { return JSON.parse(localStorage.getItem('boatAiAnalyses') || '[]'); }
+      catch (e) { return []; }
+    }
+
+    function setSavedAnalyses(items) {
+      localStorage.setItem('boatAiAnalyses', JSON.stringify(items));
+    }
+
+    function saveAnalysis() {
+      if (!currentAnalysis) {
+        parseAnalysisJson();
+        if (!currentAnalysis) return;
+      }
+      const items = getSavedAnalyses();
+      items.unshift(currentAnalysis);
+      setSavedAnalyses(items);
+      renderSavedAnalyses();
+      alert('分析データをブラウザ内に保存しました。');
+    }
+
+    function renderSavedAnalyses() {
+      const items = getSavedAnalyses();
+      const target = document.getElementById('savedList');
+      if (!items.length) {
+        target.innerHTML = '<div class="saved-item">保存済み分析はまだありません。</div>';
+        return;
+      }
+      target.innerHTML = items.map(function(item) {
+        return '<div class="saved-item"><b>' + escapeHtml(item.date) + ' ' + escapeHtml(item.place) + ' ' + escapeHtml(item.race_no) + '</b><br>' +
+          '1号艇信頼度：' + item.first_boat_reliability + ' / 荒れ度：' + item.roughness + '<br>' +
+          '本命：' + escapeHtml((item.main_tickets || []).join('、')) + '<br>' +
+          '穴：' + escapeHtml((item.hole_tickets || []).join('、')) + '</div>';
+      }).join('');
+    }
+
+    function clearSavedAnalyses() {
+      if (!confirm('保存済み分析を削除しますか？')) return;
+      localStorage.removeItem('boatAiAnalyses');
+      renderSavedAnalyses();
+    }
+
+    function downloadJson() {
+      const items = getSavedAnalyses();
+      const data = items.length ? items : (currentAnalysis ? [currentAnalysis] : []);
+      if (!data.length) { alert('出力する分析データがありません。'); return; }
+      downloadFile('boat-ai-analyses.json', JSON.stringify(data, null, 2), 'application/json');
+    }
+
+    function downloadCsv() {
+      const items = getSavedAnalyses();
+      const data = items.length ? items : (currentAnalysis ? [currentAnalysis] : []);
+      if (!data.length) { alert('出力する分析データがありません。'); return; }
+      const NL = String.fromCharCode(10);
+      const BOM = String.fromCharCode(65279);
+      const headers = ['date','place','race_no','deadline','first_boat_reliability','roughness','risk_level','danger_popular_boats','main_tickets','hole_tickets','reserve_tickets','summary','saved_at'];
+      const rows = data.map(function(item) {
+        return headers.map(function(key) {
+          const value = Array.isArray(item[key]) ? JSON.stringify(item[key]) : (item[key] || '');
+          return csvEscape(value);
+        }).join(',');
+      });
+      const csv = BOM + headers.join(',') + NL + rows.join(NL);
+      downloadFile('boat-ai-analyses.csv', csv, 'text/csv;charset=utf-8;');
+    }
+
+    function downloadFile(filename, content, type) {
+      const blob = new Blob([content], { type: type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function csvEscape(value) {
+      const q = String.fromCharCode(34);
+      return q + String(value).replaceAll(q, q + q) + q;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    renderSavedAnalyses();
+  </script>
+</body>
+</html>
