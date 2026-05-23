@@ -61,6 +61,14 @@ tr:last-child td{border-bottom:0}
 .ticket-block{margin-top:8px}
 .ticket-block b{display:block;margin-bottom:8px}
 .text{background:#fbfdff;border:1px solid var(--line);border-radius:18px;padding:14px}
+
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.feature-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 10px 30px rgba(22,31,52,.04)}
+.feature-card .icon{font-size:28px;line-height:1;margin-bottom:10px}
+.feature-card h3{margin:0 0 8px;font-size:22px;letter-spacing:-.02em}
+.feature-card p{margin:0;color:var(--muted)}
+@media(max-width:900px){.feature-grid{grid-template-columns:1fr}}
+
 footer{margin-top:22px;border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px}
 @media (max-width: 980px){
   .hero-grid,.form,.metrics,.top4-grid{grid-template-columns:1fr 1fr}
@@ -101,6 +109,32 @@ footer{margin-top:22px;border-top:1px solid var(--line);padding:26px 0;color:var
             alt="ボートレースのイメージ"
             onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 700%22><defs><linearGradient id=%22g%22 x1=%220%22 x2=%221%22 y1=%220%22 y2=%221%22><stop offset=%220%25%22 stop-color=%22%2308b9ff%22/><stop offset=%22100%25%22 stop-color=%22%236de5a8%22/></linearGradient></defs><rect width=%221200%22 height=%22700%22 fill=%22%23eaf7ff%22/><rect y=%22430%22 width=%221200%22 height=%22270%22 fill=%22url(%23g)%22 opacity=%220.9%22/><path d=%22M0 470 C150 430 250 510 400 470 S650 430 820 475 1030 520 1200 470 L1200 700 L0 700 Z%22 fill=%22%23baf1ff%22/><path d=%22M175 380 l130 -35 65 25 -95 35 z%22 fill=%22%23ffffff%22 stroke=%22%230f172a%22 stroke-width=%223%22/><path d=%22M315 347 l30 -70 40 48 z%22 fill=%22%23ffffff%22 stroke=%22%230f172a%22 stroke-width=%223%22/><circle cx=%22195%22 cy=%22396%22 r=%229%22 fill=%22%23ff4545%22/><path d=%22M500 355 l145 -40 70 26 -104 38 z%22 fill=%22%23ffffff%22 stroke=%22%230f172a%22 stroke-width=%223%22/><path d=%22M650 318 l34 -77 44 52 z%22 fill=%22%23ffffff%22 stroke=%22%230f172a%22 stroke-width=%223%22/><circle cx=%22528%22 cy=%22372%22 r=%229%22 fill=%22%2300a2ff%22/><path d=%22M830 390 l150 -44 74 28 -107 40 z%22 fill=%22%23ffffff%22 stroke=%22%230f172a%22 stroke-width=%223%22/><path d=%22M985 348 l36 -83 49 56 z%22 fill=%22%23ffffff%22 stroke=%22%230f172a%22 stroke-width=%223%22/><circle cx=%22863%22 cy=%22407%22 r=%229%22 fill=%22%23ffc400%22/><text x=%2260%22 y=%22110%22 font-size=%2254%22 font-family=%22Arial, sans-serif%22 font-weight=%22700%22 fill=%22%230f172a%22>BOAT RACE AI RISK LAB</text><text x=%2260%22 y=%22162%22 font-size=%2228%22 font-family=%22Arial, sans-serif%22 fill=%22%23455a77%22>BOAT RACE AI RISK LAB</text></svg>';">
         </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <div class="wrap">
+      <div class="head">
+        <h2>予想を売るだけではなく、人気リスクを見える化する。</h2>
+        <p>公式出走表にある数字をそのまま並べるのではなく、予想前に確認したいリスクを指数化します。</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="icon">⚠️</div>
+          <h3>危険人気チェック</h3>
+          <p>人気している艇や買い目に、ST・モーター・展示・枠の不安がないかを整理します。</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">📊</div>
+          <h3>1号艇信頼度</h3>
+          <p>イン有利だけでなく、平均ST・モーター・当地成績・展示気配から信頼度を数値化します。</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🎯</div>
+          <h3>本命・抑えを整理</h3>
+          <p>本命5点・抑え3点をAI独自指数順で表示。オッズだけに引っ張られない買い目整理を狙います。</p>
+        </div>
       </div>
     </div>
   </section>
@@ -173,6 +207,70 @@ function raceNum(s){ const m = String(s||'').match(/\d+/); return m ? Number(m[0
 function esc(v){ return String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
 function rankClass(rank){ return String(rank||''); }
 
+
+
+function raceGrade(r){
+  const raw = String(r.grade || r.race_grade || r.event_grade || r.eventTitle || r.event_title || "");
+  const upper = raw.toUpperCase();
+  if(upper.includes("SG")) return "SG";
+  if(upper.includes("G1") || upper.includes("Ｇ１")) return "G1";
+  if(upper.includes("G2") || upper.includes("Ｇ２")) return "G2";
+  if(upper.includes("G3") || upper.includes("Ｇ３")) return "G3";
+  return "";
+}
+function placeGrade(date, place){
+  const rows = raceData.filter(r => r.date === date && r.place === place);
+  for(const r of rows){
+    const g = raceGrade(r);
+    if(g) return g;
+  }
+  return "";
+}
+
+function venueTimeZone(r){
+  if(r.time_zone) return r.time_zone;
+  if(r.timeZone) return r.timeZone;
+  const p = r.place || "";
+  const morning = ["三国","芦屋","唐津","徳山"];
+  const night = ["桐生","住之江","丸亀","大村","若松"];
+  const midnight = ["下関"];
+  if(midnight.includes(p)) return "ミッドナイト";
+  if(morning.includes(p)) return "モーニング";
+  if(night.includes(p)) return "ナイター";
+  return "デイ";
+}
+function zoneInfo(zone){
+  if(zone === "モーニング") return {order:1, emoji:"☀", label:"モーニング"};
+  if(zone === "ナイター") return {order:3, emoji:"🌙", label:"ナイター"};
+  if(zone === "ミッドナイト") return {order:4, emoji:"🌃", label:"ミッドナイト"};
+  return {order:2, emoji:"🌤", label:"デイレース"};
+}
+function buildPlaceOptions(date){
+  const map = {};
+  raceData.filter(r => r.date === date).forEach(r => {
+    const place = r.place;
+    if(!place) return;
+    const zone = venueTimeZone(r);
+    if(!map[zone]) map[zone] = [];
+    if(!map[zone].includes(place)) map[zone].push(place);
+  });
+
+  const zones = Object.keys(map).sort((a,b)=>zoneInfo(a).order-zoneInfo(b).order);
+  let html = '<option value="">場を選択</option>';
+  zones.forEach(zone => {
+    const info = zoneInfo(zone);
+    const places = map[zone].sort();
+    html += '<optgroup label="' + esc(info.emoji + ' ' + info.label) + '">';
+    places.forEach(p => {
+      const grade = placeGrade(date, p);
+      const label = info.emoji + ' ' + p + (grade ? ' ' + grade : '');
+      html += '<option value="' + esc(p) + '">' + esc(label) + '</option>';
+    });
+    html += '</optgroup>';
+  });
+  return html;
+}
+
 function setupDates(){
   const dates = unique(raceData.map(r => r.date)).sort();
   const s = document.getElementById('dateSelect');
@@ -181,10 +279,14 @@ function setupDates(){
 }
 function onDateChange(){
   const date = document.getElementById('dateSelect').value;
-  const places = unique(raceData.filter(r => r.date === date).map(r => r.place)).sort();
-  document.getElementById('placeSelect').innerHTML = '<option value="">場を選択</option>' + places.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
+  document.getElementById('placeSelect').innerHTML = buildPlaceOptions(date);
   document.getElementById('raceSelect').innerHTML = '<option value="">場を選択してください</option>';
-  if(places.length === 1){ document.getElementById('placeSelect').value = places[0]; onPlaceChange(); }
+
+  const places = unique(raceData.filter(r => r.date === date).map(r => r.place)).sort();
+  if(places.length === 1){
+    document.getElementById('placeSelect').value = places[0];
+    onPlaceChange();
+  }
 }
 function onPlaceChange(){
   const date = document.getElementById('dateSelect').value;
