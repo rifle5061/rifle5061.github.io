@@ -1,34 +1,381 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>管理者ページ｜ボートAIリスク研究所</title>
 <style>
-:root{--bg:#07111f;--card:#10243d;--line:rgba(255,255,255,.14);--text:#f4f8ff;--muted:#a9b7c9;--a:#2fe3ff;--b:#7cf7b5;--w:#ffcc66}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.7}.wrap{width:min(1100px,calc(100% - 32px));margin:auto;padding:28px 0}h1{font-size:clamp(28px,5vw,48px);margin:0 0 10px}.lead,.small{color:var(--muted)}.card{border:1px solid var(--line);background:rgba(16,36,61,.78);border-radius:22px;padding:20px;margin:16px 0}label{display:block;font-size:13px;font-weight:900;color:#d7edff;margin:12px 0 6px}input,textarea{width:100%;border:1px solid var(--line);background:rgba(0,0,0,.18);color:var(--text);border-radius:14px;padding:12px;font:inherit}textarea{min-height:240px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.btn{border:0;border-radius:999px;padding:11px 16px;font-weight:900;cursor:pointer;margin:6px 6px 6px 0}.btn-primary{background:linear-gradient(135deg,var(--a),var(--b));color:#04111d}.btn-ghost{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--line)}.notice{border:1px solid rgba(255,204,102,.24);background:rgba(255,204,102,.08);color:#ffe5ad;border-radius:16px;padding:12px;font-size:13px}.ok{border-color:rgba(124,247,181,.25);background:rgba(124,247,181,.08);color:#c9ffe2}.bad{border-color:rgba(255,122,122,.28);background:rgba(255,122,122,.08);color:#ffc7c7}.preview{white-space:pre-wrap;border:1px solid var(--line);background:rgba(0,0,0,.18);border-radius:16px;padding:14px;max-height:360px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}@media(max-width:800px){.grid{grid-template-columns:1fr}.btn{width:100%}}
+:root{
+  --bg:#07111f;--card:#10243d;--line:rgba(255,255,255,.14);--text:#f4f8ff;
+  --muted:#a9b7c9;--a:#2fe3ff;--b:#7cf7b5;--w:#ffcc66;--bad:#ff7a7a;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top left,rgba(47,227,255,.14),transparent 34%),var(--bg);color:var(--text);line-height:1.7}
+.wrap{width:min(1160px,calc(100% - 32px));margin:auto;padding:28px 0}
+h1{font-size:clamp(28px,5vw,48px);margin:0 0 8px;letter-spacing:-.04em}
+h2{margin:0 0 12px}
+.lead,.small{color:var(--muted)}
+.card{border:1px solid var(--line);background:rgba(16,36,61,.78);border-radius:22px;padding:20px;margin:16px 0;box-shadow:0 18px 46px rgba(0,0,0,.22)}
+label{display:block;font-size:13px;font-weight:900;color:#d7edff;margin:12px 0 6px}
+input,textarea,select{width:100%;border:1px solid var(--line);background:rgba(0,0,0,.18);color:var(--text);border-radius:14px;padding:12px;font:inherit;outline:none}
+textarea{min-height:260px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.btn{border:0;border-radius:999px;padding:11px 16px;font-weight:900;cursor:pointer;margin:6px 6px 6px 0;font-family:inherit}
+.btn-primary{background:linear-gradient(135deg,var(--a),var(--b));color:#04111d}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--line)}
+.notice{border:1px solid rgba(255,204,102,.24);background:rgba(255,204,102,.08);color:#ffe5ad;border-radius:16px;padding:12px;font-size:13px;margin-top:12px}
+.ok{border-color:rgba(124,247,181,.25);background:rgba(124,247,181,.08);color:#c9ffe2}
+.bad{border-color:rgba(255,122,122,.28);background:rgba(255,122,122,.08);color:#ffc7c7}
+.preview{white-space:pre-wrap;border:1px solid var(--line);background:rgba(0,0,0,.18);border-radius:16px;padding:14px;max-height:380px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}
+.metric{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:16px;padding:14px}
+.metric span{display:block;color:var(--muted);font-size:12px}
+.metric strong{font-size:26px;line-height:1.2}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px;background:rgba(0,0,0,.12);margin-top:12px}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th,td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top;font-size:14px}
+th{color:#d7edff;background:rgba(255,255,255,.045);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{display:inline-flex;border:1px solid rgba(47,227,255,.28);background:rgba(47,227,255,.10);border-radius:999px;padding:5px 9px;font-weight:900;font-size:13px}
+.chip.warn{border-color:rgba(255,204,102,.34);background:rgba(255,204,102,.10)}
+.err-list{display:grid;gap:8px;margin-top:12px}
+.err{border:1px solid rgba(255,122,122,.28);background:rgba(255,122,122,.08);border-radius:12px;padding:10px;color:#ffc7c7;font-size:13px}
+@media(max-width:860px){.grid,.grid4{grid-template-columns:1fr}.btn{width:100%}}
 </style>
 </head>
-<body><div class="wrap">
-<h1>管理者ページ</h1><p class="lead">ChatGPTで作った当日分析JSONを貼り、race-data.jsonとして出力・GitHubへ上書きします。</p>
+<body>
+<div class="wrap">
+  <h1>ボートAIリスク研究所 管理者ページ</h1>
+  <p class="lead">当日分析JSONを貼って、件数チェック・場別チェック・艇別リスク確認・未分析チェックを行い、<b>race-data.json</b>として出力します。</p>
 
-<div class="card"><h2>1. 当日データを貼る</h2><p class="small">配列 <code>[{...},{...}]</code>、または <code>{"races":[...]}</code> 形式でOK。コードブロックごと貼っても読み取ります。</p><label>当日分析JSON</label><textarea id="jsonInput"></textarea><button class="btn btn-primary" onclick="parseJson()">JSONを読み取る</button><button class="btn btn-ghost" onclick="downloadRaceData()">race-data.jsonをダウンロード</button><button class="btn btn-ghost" onclick="loadSample()">サンプルを入れる</button><div id="parseStatus" class="notice">まだ読み取っていません。</div></div>
+  <div class="card">
+    <h2>1. 当日データを貼る</h2>
+    <p class="small">配列 <code>[{...},{...}]</code>、または <code>{"races":[...]}</code> 形式でOK。ChatGPT回答のJSONコードブロックごと貼っても読み取ります。</p>
+    <label for="jsonInput">当日分析JSON</label>
+    <textarea id="jsonInput" placeholder='[
+  {
+    "date": "2026-05-24",
+    "place": "下関",
+    "race_no": "11R",
+    "first_boat_reliability": 62,
+    "roughness": 57,
+    "risk_level": "B-",
+    "danger_popular_boats": [],
+    "boat_risks": [],
+    "main_tickets": [],
+    "hole_tickets": [],
+    "summary": "短評"
+  }
+]'></textarea>
 
-<div class="card"><h2>2. プレビュー</h2><div id="preview" class="preview">ここに整形後のrace-data.jsonが表示されます。</div></div>
+    <button class="btn btn-primary" onclick="parseJson()">JSONを読み取る</button>
+    <button class="btn btn-ghost" onclick="downloadRaceData()">race-data.jsonをダウンロード</button>
+    <button class="btn btn-ghost" onclick="loadSample()">サンプルを入れる</button>
+    <button class="btn btn-ghost" onclick="clearInput()">クリア</button>
 
-<div class="card"><h2>3. GitHubへ直接上書き</h2><p class="notice">トークンはHTMLに保存しません。入力したトークンはGitHub API送信時だけ使います。公開ページにトークンを埋め込まないでください。</p>
-<div class="grid"><div><label>GitHubユーザー名</label><input id="owner" value="rifle5061"></div><div><label>リポジトリ名</label><input id="repo" value="boat-ai-risk-lab"></div><div><label>ブランチ</label><input id="branch" value="main"></div></div>
-<div class="grid"><div><label>上書きファイル</label><input id="path" value="race-data.json"></div><div><label>コミットメッセージ</label><input id="message" value="Update race data"></div><div><label>GitHub Token</label><input id="token" type="password" placeholder="github_pat_..."></div></div>
-<button class="btn btn-primary" onclick="updateGithub()">GitHubのrace-data.jsonを上書き</button><div id="githubStatus" class="notice">未送信です。</div></div>
+    <div id="parseStatus" class="notice">まだ読み取っていません。</div>
+  </div>
 
-<div class="card"><h2>Tokenメモ</h2><p class="small">GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token。対象リポジトリを boat-ai-risk-lab に限定し、Repository permissions の Contents を Read and write にします。</p></div>
+  <div class="card">
+    <h2>2. データチェック</h2>
+    <div class="grid4">
+      <div class="metric"><span>登録レース数</span><strong id="totalCount">-</strong></div>
+      <div class="metric"><span>場数</span><strong id="placeCount">-</strong></div>
+      <div class="metric"><span>分析済み</span><strong id="analyzedCount">-</strong></div>
+      <div class="metric"><span>未分析</span><strong id="notAnalyzedCount">-</strong></div>
+    </div>
+
+    <div class="grid4" style="margin-top:12px;">
+      <div class="metric"><span>艇別リスクあり</span><strong id="boatRiskCount">-</strong></div>
+      <div class="metric"><span>本命5点あり</span><strong id="mainTicketCount">-</strong></div>
+      <div class="metric"><span>抑え3点あり</span><strong id="osaeTicketCount">-</strong></div>
+      <div class="metric"><span>エラー候補</span><strong id="errorCount">-</strong></div>
+    </div>
+
+    <div id="errorList" class="err-list"></div>
+  </div>
+
+  <div class="card">
+    <h2>3. 場別登録数</h2>
+    <div id="placeSummary" class="table-wrap">
+      <table><tbody><tr><td>読み取り後に表示されます。</td></tr></tbody></table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>4. レース一覧プレビュー</h2>
+    <div id="raceList" class="table-wrap">
+      <table><tbody><tr><td>読み取り後に表示されます。</td></tr></tbody></table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>5. race-data.json プレビュー</h2>
+    <div id="preview" class="preview">ここに整形後のrace-data.jsonが表示されます。</div>
+  </div>
+
+  <div class="card">
+    <h2>6. GitHubへ直接上書き（任意）</h2>
+    <p class="notice">トークンはHTMLに保存しません。入力したトークンはGitHub API送信時だけ使います。公開ページにトークンを埋め込まないでください。最初は「ダウンロード→GitHubへ手動アップロード」でOKです。</p>
+    <div class="grid">
+      <div><label>GitHubユーザー名</label><input id="owner" value="rifle5061"></div>
+      <div><label>リポジトリ名</label><input id="repo" value="boat-ai-risk-lab"></div>
+      <div><label>ブランチ</label><input id="branch" value="main"></div>
+    </div>
+    <div class="grid">
+      <div><label>上書きファイル</label><input id="path" value="race-data.json"></div>
+      <div><label>コミットメッセージ</label><input id="message" value="Update race data"></div>
+      <div><label>GitHub Token</label><input id="token" type="password" placeholder="github_pat_..."></div>
+    </div>
+    <button class="btn btn-primary" onclick="updateGithub()">GitHubのrace-data.jsonを上書き</button>
+    <div id="githubStatus" class="notice">未送信です。</div>
+  </div>
 </div>
+
 <script>
-let currentData=null;
-function extractJson(t){const s=t.trim();const f=s.indexOf('```json');if(f>=0){let a=s.indexOf('[',f);let o=s.indexOf('{',f);let st=(a>=0&&o>=0)?Math.min(a,o):Math.max(a,o);let e=s.indexOf('```',st+1);if(st>=0&&e>st)return s.slice(st,e).trim()}let a=s.indexOf('['),o=s.indexOf('{');let st=(a>=0&&o>=0)?Math.min(a,o):Math.max(a,o);let en=Math.max(s.lastIndexOf(']'),s.lastIndexOf('}'));return st>=0&&en>st?s.slice(st,en+1):s}
-function normData(p){const arr=Array.isArray(p)?p:(Array.isArray(p.races)?p.races:[p]);return arr.map(r=>({date:r.date||'',place:r.place||'',race_no:r.race_no||r.raceNo||'',deadline:r.deadline||'',first_boat_reliability:Number(r.first_boat_reliability||r.firstBoatReliability||0),roughness:Number(r.roughness||0),risk_level:r.risk_level||r.riskLevel||'',danger_popular_boats:Array.isArray(r.danger_popular_boats)?r.danger_popular_boats:[],main_tickets:Array.isArray(r.main_tickets)?r.main_tickets:[],hole_tickets:Array.isArray(r.hole_tickets)?r.hole_tickets:[],reserve_tickets:Array.isArray(r.reserve_tickets)?r.reserve_tickets:[],summary:r.summary||'',analysis_text:r.analysis_text||r.analysisText||''}))}
-function parseJson(){const raw=document.getElementById('jsonInput').value;if(!raw.trim())return stat('parseStatus','JSONを貼ってください。','bad');try{currentData=normData(JSON.parse(extractJson(raw)));document.getElementById('preview').textContent=JSON.stringify(currentData,null,2);stat('parseStatus','読み取り成功：'+currentData.length+'レース分','ok')}catch(e){stat('parseStatus','JSON読み取り失敗。カンマ抜け、全角記号、余計な文章を確認してください。','bad')}}
-function downloadRaceData(){if(!currentData)parseJson();if(!currentData)return;download('race-data.json',JSON.stringify(currentData,null,2),'application/json')}
-async function updateGithub(){if(!currentData)parseJson();if(!currentData)return;const owner=v('owner'),repo=v('repo'),branch=v('branch'),path=v('path'),msg=v('message')||'Update race data',token=v('token');if(!owner||!repo||!branch||!path||!token)return stat('githubStatus','未入力があります。Tokenも必要です。','bad');const content=JSON.stringify(currentData,null,2);try{stat('githubStatus','既存ファイル確認中...','');let sha=null;const get=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+encodeURIComponent(path)+'?ref='+encodeURIComponent(branch),{headers:{Authorization:'Bearer '+token,Accept:'application/vnd.github+json'}});if(get.ok){sha=(await get.json()).sha}else if(get.status!==404){throw new Error(await get.text())}stat('githubStatus','GitHubへ上書き中...','');const body={message:msg,content:b64(content),branch:branch};if(sha)body.sha=sha;const put=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+encodeURIComponent(path),{method:'PUT',headers:{Authorization:'Bearer '+token,Accept:'application/vnd.github+json','Content-Type':'application/json'},body:JSON.stringify(body)});if(!put.ok)throw new Error(await put.text());stat('githubStatus','更新成功。GitHub Pages反映まで少し待ってください。','ok')}catch(e){stat('githubStatus','更新失敗：'+e.message,'bad')}}
-function loadSample(){document.getElementById('jsonInput').value=JSON.stringify([{date:new Date().toISOString().slice(0,10),place:'徳山',race_no:'5R',deadline:'10:30',first_boat_reliability:72,roughness:44,risk_level:'B',danger_popular_boats:[{boat:2,reason:'人気しそうだが平均STと壁性能に不安'}],main_tickets:['1-2-3','1-3-2','1-2-4','1-4-2','1-3-4'],hole_tickets:['2-1-3','3-1-2','1-5-3'],reserve_tickets:['1-2-5','1-5-2'],summary:'1号艇中心。ただし2号艇の過信注意。3号艇の攻撃と5号艇3着を確認。',analysis_text:'サンプル用データです。'}],null,2);parseJson()}
-function stat(id,m,t){const e=document.getElementById(id);e.textContent=m;e.className='notice '+(t||'')}function v(id){return document.getElementById(id).value.trim()}function b64(s){const bytes=new TextEncoder().encode(s);let bin='';bytes.forEach(x=>bin+=String.fromCharCode(x));return btoa(bin)}function download(n,c,type){const blob=new Blob([c],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=n;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}
-</script></body></html>
+let currentData = null;
+
+function extractJson(text){
+  const trimmed = text.trim();
+  const startFence = trimmed.indexOf("```json");
+  if(startFence >= 0){
+    let a = trimmed.indexOf("[", startFence);
+    let o = trimmed.indexOf("{", startFence);
+    let start = (a >= 0 && o >= 0) ? Math.min(a,o) : Math.max(a,o);
+    let endFence = trimmed.indexOf("```", start + 1);
+    if(start >= 0 && endFence > start) return trimmed.slice(start, endFence).trim();
+  }
+  let a = trimmed.indexOf("[");
+  let o = trimmed.indexOf("{");
+  let start = (a >= 0 && o >= 0) ? Math.min(a,o) : Math.max(a,o);
+  let end = Math.max(trimmed.lastIndexOf("]"), trimmed.lastIndexOf("}"));
+  if(start >= 0 && end > start) return trimmed.slice(start, end + 1);
+  return trimmed;
+}
+
+function normalizeData(parsed){
+  const arr = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.races) ? parsed.races : [parsed]);
+  return arr.map(r => {
+    const main = Array.isArray(r.main_tickets) ? r.main_tickets : (r.tickets && Array.isArray(r.tickets.main_tickets) ? r.tickets.main_tickets : []);
+    const osa = Array.isArray(r.hole_tickets) ? r.hole_tickets : (Array.isArray(r.osae_tickets) ? r.osae_tickets : (r.tickets && Array.isArray(r.tickets.hole_tickets) ? r.tickets.hole_tickets : []));
+    const reserve = Array.isArray(r.reserve_tickets) ? r.reserve_tickets : (r.tickets && Array.isArray(r.tickets.reserve_tickets) ? r.tickets.reserve_tickets : []);
+    const boatRisks = Array.isArray(r.boat_risks) ? r.boat_risks : (Array.isArray(r.boatRisks) ? r.boatRisks : []);
+    return {
+      ...r,
+      date: r.date || "",
+      place: r.place || "",
+      race_no: r.race_no || r.raceNo || "",
+      deadline: r.deadline || "",
+      first_boat_reliability: Number(r.first_boat_reliability ?? r.firstBoatReliability ?? 0),
+      roughness: Number(r.roughness ?? 0),
+      risk_level: r.risk_level || r.riskLevel || "",
+      danger_popular_boats: Array.isArray(r.danger_popular_boats) ? r.danger_popular_boats : [],
+      boat_risks: boatRisks,
+      main_tickets: main,
+      hole_tickets: osa,
+      reserve_tickets: reserve,
+      summary: r.summary || "",
+      analysis_text: r.analysis_text || r.analysisText || ""
+    };
+  });
+}
+
+function parseJson(){
+  const raw = document.getElementById("jsonInput").value;
+  if(!raw.trim()) return setStatus("parseStatus","JSONを貼ってください。","bad");
+
+  try{
+    const text = extractJson(raw);
+    const parsed = JSON.parse(text);
+    currentData = normalizeData(parsed);
+    document.getElementById("preview").textContent = JSON.stringify(currentData, null, 2);
+    setStatus("parseStatus","読み取り成功：" + currentData.length + "レース分","ok");
+    renderStats();
+    renderPlaceSummary();
+    renderRaceList();
+  }catch(e){
+    setStatus("parseStatus","JSON読み取り失敗。カンマ抜け、全角記号、余計な文章を確認してください。","bad");
+  }
+}
+
+function renderStats(){
+  const data = currentData || [];
+  const places = unique(data.map(r => r.place));
+  const analyzed = data.filter(r => r.status === "分析済み" || r.first_boat_reliability > 0 || r.roughness > 0 || (r.summary && !r.summary.includes("未入力"))).length;
+  const boatRisks = data.filter(r => Array.isArray(r.boat_risks) && r.boat_risks.length >= 6).length;
+  const mainTickets = data.filter(r => Array.isArray(r.main_tickets) && r.main_tickets.length >= 5).length;
+  const osaTickets = data.filter(r => Array.isArray(r.hole_tickets) && r.hole_tickets.length >= 3).length;
+  const errors = validateData(data);
+
+  setText("totalCount", data.length);
+  setText("placeCount", places.length);
+  setText("analyzedCount", analyzed);
+  setText("notAnalyzedCount", data.length - analyzed);
+  setText("boatRiskCount", boatRisks);
+  setText("mainTicketCount", mainTickets);
+  setText("osaeTicketCount", osaTickets);
+  setText("errorCount", errors.length);
+
+  const list = document.getElementById("errorList");
+  if(!errors.length){
+    list.innerHTML = '<div class="notice ok">大きなエラー候補はありません。</div>';
+  }else{
+    list.innerHTML = errors.slice(0,50).map(e => '<div class="err">' + esc(e) + '</div>').join("");
+  }
+}
+
+function validateData(data){
+  const errors = [];
+  data.forEach((r, i) => {
+    const label = `${r.date || "日付なし"} ${r.place || "場なし"} ${r.race_no || "Rなし"}`;
+    if(!r.date) errors.push(`${label}：date が空です`);
+    if(!r.place) errors.push(`${label}：place が空です`);
+    if(!r.race_no) errors.push(`${label}：race_no が空です`);
+    if(r.first_boat_reliability < 0 || r.first_boat_reliability > 100) errors.push(`${label}：1号艇信頼度が0〜100外です`);
+    if(r.roughness < 0 || r.roughness > 100) errors.push(`${label}：荒れ度が0〜100外です`);
+    if(Array.isArray(r.boat_risks) && r.boat_risks.length > 0 && r.boat_risks.length < 6) errors.push(`${label}：艇別リスクが6艇未満です`);
+  });
+  return errors;
+}
+
+function renderPlaceSummary(){
+  const data = currentData || [];
+  const map = {};
+  data.forEach(r => {
+    if(!map[r.place]) map[r.place] = { total:0, analyzed:0, boatRisks:0 };
+    map[r.place].total++;
+    if(r.status === "分析済み" || r.first_boat_reliability > 0 || r.roughness > 0) map[r.place].analyzed++;
+    if(Array.isArray(r.boat_risks) && r.boat_risks.length >= 6) map[r.place].boatRisks++;
+  });
+  const rows = Object.keys(map).sort().map(place => {
+    const x = map[place];
+    return `<tr><td>${esc(place)}</td><td>${x.total}</td><td>${x.analyzed}</td><td>${x.boatRisks}</td></tr>`;
+  }).join("");
+  document.getElementById("placeSummary").innerHTML = `<table><thead><tr><th>場</th><th>登録数</th><th>分析済み</th><th>艇別リスクあり</th></tr></thead><tbody>${rows || "<tr><td>なし</td></tr>"}</tbody></table>`;
+}
+
+function renderRaceList(){
+  const data = currentData || [];
+  const rows = data.slice(0,300).map(r => {
+    const risks = Array.isArray(r.boat_risks) ? r.boat_risks.length : 0;
+    const main = Array.isArray(r.main_tickets) ? r.main_tickets.length : 0;
+    const osa = Array.isArray(r.hole_tickets) ? r.hole_tickets.length : 0;
+    return `<tr>
+      <td>${esc(r.date)}</td>
+      <td>${esc(r.place)}</td>
+      <td>${esc(r.race_no)}</td>
+      <td>${esc(r.first_boat_reliability)}</td>
+      <td>${esc(r.roughness)}</td>
+      <td>${esc(r.risk_level)}</td>
+      <td>${risks}</td>
+      <td>${main}</td>
+      <td>${osa}</td>
+    </tr>`;
+  }).join("");
+  document.getElementById("raceList").innerHTML = `<table><thead><tr><th>日付</th><th>場</th><th>R</th><th>1信頼度</th><th>荒れ度</th><th>判定</th><th>艇別</th><th>本命</th><th>抑え</th></tr></thead><tbody>${rows || "<tr><td>なし</td></tr>"}</tbody></table>`;
+}
+
+function downloadRaceData(){
+  if(!currentData) parseJson();
+  if(!currentData) return;
+  download("race-data.json", JSON.stringify(currentData, null, 2), "application/json");
+}
+
+async function updateGithub(){
+  if(!currentData) parseJson();
+  if(!currentData) return;
+
+  const owner = val("owner");
+  const repo = val("repo");
+  const branch = val("branch");
+  const path = val("path");
+  const message = val("message") || "Update race data";
+  const token = val("token");
+
+  if(!owner || !repo || !branch || !path || !token){
+    return setStatus("githubStatus","未入力があります。Tokenも必要です。","bad");
+  }
+
+  const content = JSON.stringify(currentData, null, 2);
+
+  try{
+    setStatus("githubStatus","既存ファイル確認中...","");
+    let sha = null;
+    const getUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`;
+    const getRes = await fetch(getUrl, {headers:{Authorization:"Bearer " + token, Accept:"application/vnd.github+json"}});
+    if(getRes.ok){
+      sha = (await getRes.json()).sha;
+    }else if(getRes.status !== 404){
+      throw new Error(await getRes.text());
+    }
+
+    setStatus("githubStatus","GitHubへ上書き中...","");
+    const body = {message, content: base64EncodeUnicode(content), branch};
+    if(sha) body.sha = sha;
+
+    const putRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`,{
+      method:"PUT",
+      headers:{Authorization:"Bearer " + token, Accept:"application/vnd.github+json", "Content-Type":"application/json"},
+      body:JSON.stringify(body)
+    });
+    if(!putRes.ok) throw new Error(await putRes.text());
+    setStatus("githubStatus","更新成功。GitHub Pages反映まで少し待ってください。","ok");
+  }catch(e){
+    setStatus("githubStatus","更新失敗：" + e.message,"bad");
+  }
+}
+
+function loadSample(){
+  const sample = [{
+    date:"2026-05-24",
+    place:"下関",
+    race_no:"11R",
+    deadline:"22:05",
+    status:"分析済み",
+    first_boat_reliability:62,
+    roughness:57,
+    risk_level:"B-（1中心だが過信注意）",
+    danger_popular_boats:[
+      {boat:1, reason:"1枠で信頼されやすいがモーター不安なら過信注意"},
+      {boat:5, reason:"強モーターでも外枠距離ロスに注意"}
+    ],
+    boat_risks:[
+      {boat:1, role:"イン信頼度", rank:"B", risk_note:"A1・全国成績は強いが、モーター不安なら過信注意"},
+      {boat:2, role:"差し脅威度＋壁性能", rank:"A-", risk_note:"平均ST同等なら差し脅威あり"},
+      {boat:3, role:"攻撃脅威度＋3着残り", rank:"C+", risk_note:"3着残り候補"},
+      {boat:4, role:"カド/相手残り", rank:"B+", risk_note:"2・3着候補"},
+      {boat:5, role:"展開突入度", rank:"A", risk_note:"展開が開けば上位候補"},
+      {boat:6, role:"穴絡み度", rank:"B+", risk_note:"3着抑え向き"}
+    ],
+    main_tickets:["1-2-5","1-5-2","1-2-4","1-4-5","2-1-5"],
+    hole_tickets:["5-1-2","2-5-1","1-5-6"],
+    reserve_tickets:["1-5-4","5-1-4","2-1-4","1-2-6","5-2-1"],
+    summary:"1中心だけど1を過信しないレース。",
+    analysis_text:"艇別リスク表示テスト用サンプルです。"
+  }];
+  document.getElementById("jsonInput").value = JSON.stringify(sample, null, 2);
+  parseJson();
+}
+
+function clearInput(){
+  document.getElementById("jsonInput").value = "";
+  currentData = null;
+  document.getElementById("preview").textContent = "ここに整形後のrace-data.jsonが表示されます。";
+  setStatus("parseStatus","まだ読み取っていません。","");
+  ["totalCount","placeCount","analyzedCount","notAnalyzedCount","boatRiskCount","mainTicketCount","osaeTicketCount","errorCount"].forEach(id=>setText(id,"-"));
+  document.getElementById("errorList").innerHTML = "";
+  document.getElementById("placeSummary").innerHTML = "<table><tbody><tr><td>読み取り後に表示されます。</td></tr></tbody></table>";
+  document.getElementById("raceList").innerHTML = "<table><tbody><tr><td>読み取り後に表示されます。</td></tr></tbody></table>";
+}
+
+function unique(arr){return [...new Set(arr.filter(Boolean))];}
+function setText(id,v){document.getElementById(id).textContent = v;}
+function setStatus(id,msg,type){const e=document.getElementById(id);e.textContent=msg;e.className="notice " + (type || "");}
+function val(id){return document.getElementById(id).value.trim();}
+function download(name, content, type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);}
+function base64EncodeUnicode(str){const bytes=new TextEncoder().encode(str);let bin="";bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin);}
+function esc(v){return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
+</script>
+</body>
+</html>
