@@ -15,7 +15,8 @@ body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",
 .wrap{width:min(1120px,calc(100% - 24px));margin:auto}
 header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}
-.logo{font-weight:900;font-size:22px;letter-spacing:-.03em;color:#0b1730}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:22px;letter-spacing:-.03em;color:#0b1730;white-space:nowrap}
+.logo img{width:34px;height:34px;border-radius:50%;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,.12)}
 .btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:14px 22px;font-weight:900;text-decoration:none;cursor:pointer}
 .btn-primary{background:linear-gradient(135deg,var(--a),var(--b));color:#06243a;box-shadow:0 10px 28px rgba(0,160,255,.16)}
 .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--text)}
@@ -76,7 +77,7 @@ footer{margin-top:22px;border-top:1px solid var(--line);padding:26px 0;color:var
 <body>
 <header>
   <div class="wrap nav">
-    <div class="logo">ボートAIリスク研究所</div>
+    <div class="logo"><img src="boat-ai-icon.png" alt="ボートAIリスク研究所アイコン"> <span>ボートAIリスク研究所</span></div>
     <a href="#search" class="btn btn-primary">無料で試す</a>
   </div>
 </header>
@@ -208,8 +209,36 @@ function showAll(){
 }
 
 function top4Boats(r){
-  const list = r.top4_boats || r.top4Boats || [];
-  if(!Array.isArray(list) || !list.length) return '';
+  let list = r.top4_boats || r.top4Boats || [];
+
+  // top4_boats が未登録でも、艇別リスクからAI上位4艇を自動生成する
+  if((!Array.isArray(list) || !list.length) && Array.isArray(r.boat_risks) && r.boat_risks.length){
+    const scoreMap = {
+      "S":100,"S-":96,"A+":94,"A":90,"A-":86,
+      "B+":78,"B":72,"B-":66,
+      "C+":58,"C":52,"C-":46,"D":35,"未評価":0
+    };
+    const centerBonus = {1:6,2:7,3:5,4:4,5:2,6:1};
+    list = r.boat_risks
+      .map(x => {
+        const boat = Number(x.boat || x.boat_no || 0);
+        const rank = String(x.rank || "");
+        const score = (scoreMap[rank] ?? 0) + (centerBonus[boat] || 0);
+        return {
+          boat,
+          label: x.role || "",
+          rank: x.rank || "",
+          reason: x.risk_note || x.note || "",
+          score
+        };
+      })
+      .filter(x => x.boat)
+      .sort((a,b) => b.score - a.score || a.boat - b.boat)
+      .slice(0,4);
+  }
+
+  if(!Array.isArray(list) || !list.length) return "";
+
   return '<div class="top4-title"><b>AI上位4艇</b></div><div class="top4-grid">' +
     list.slice(0,4).map(x =>
       '<div class="top4-card">' +
