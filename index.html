@@ -95,6 +95,35 @@ footer{margin-top:22px;border-top:1px solid var(--line);padding:26px 0;color:var
   h1{font-size:34px}
   .hero-photo img{height:220px}
 }
+
+.data-warning-box {
+  margin: 18px 0;
+  padding: 16px;
+  border-radius: 16px;
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  color: #7c2d12;
+}
+
+.data-warning-title {
+  font-weight: 800;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.data-warning-text {
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+
+.data-warning-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
 </style>
 </head>
 <body>
@@ -323,6 +352,51 @@ function showAll(){
 }
 
 
+
+function getDataQualityIssues(race) {
+  const entries = race.entries || [];
+  const issues = [];
+
+  if (!Array.isArray(entries) || entries.length < 6) {
+    issues.push(`出走表データが${entries.length || 0}/6艇分です`);
+  }
+
+  entries.forEach((e, index) => {
+    const boat = e.frame || e.boat_no || e.boat || index + 1;
+    const missing = [];
+
+    if (!e.racer_name && !e.name && !e.player && !e.racer) missing.push("選手名");
+    if (!e.class && !e.racer_class && !e.grade_class) missing.push("級別");
+    if (!e.avg_st && !e.average_st && !e.st) missing.push("平均ST");
+
+    if (missing.length > 0) {
+      issues.push(`${boat}号艇：${missing.join("・")}なし`);
+    }
+  });
+
+  return issues;
+}
+
+function renderDataQualityWarning(race) {
+  const issues = getDataQualityIssues(race);
+
+  if (issues.length === 0) {
+    return "";
+  }
+
+  return `
+    <div class="data-warning-box">
+      <div class="data-warning-title">⚠ データ一部欠損あり</div>
+      <div class="data-warning-text">
+        このレースは一部の選手データが取得できていません。AI評価は参考度を下げて確認してください。
+      </div>
+      <ul class="data-warning-list">
+        ${issues.map(issue => `<li>${esc(issue)}</li>`).join("")}
+      </ul>
+    </div>
+  `;
+}
+
 function entryValue(e, keys){
   for(const k of keys){
     if(e[k] !== undefined && e[k] !== null && e[k] !== "") return e[k];
@@ -445,6 +519,7 @@ function render(r){
       '<div class="metric"><span>勝負度/慎重度</span><strong style="font-size:26px">' + esc(r.risk_level || '-') + '</strong></div>' +
       '<div class="metric"><span>締切</span><strong style="font-size:26px">' + esc(r.deadline || '-') + '</strong></div>' +
     '</div>' +
+    renderDataQualityWarning(r) +
     entryTable(r) +
     top4Boats(r) +
     '<p><b>危険人気候補</b></p><div class="chips">' + danger(r) + '</div>' +
