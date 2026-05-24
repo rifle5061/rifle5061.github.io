@@ -80,149 +80,167 @@ def parse_weather(lines: list[str]) -> dict[str, Any]:
         "wind_direction": "",
         "water_temperature": "",
         "wave_height": "",
+        "stabilizer": "",
     }
 
-    start = None
+    full_text = " ".join(lines)
+    if "安定板使用" in full_text:
+        weather["stabilizer"] = "安定板使用"
+
+    start = 0
     for i, line in enumerate(lines):
         if "水面気象情報" in line:
             start = i
-            m = re.search(r"(\d{1,2}:\d{2})", line)
-            if m:
-                weather["time"] = m.group(1)
             break
 
-    if start is None:
-        return weather
+    end = len(lines)
+    for i in range(start + 1, len(lines)):
+        if "スマートフォン版" in lines[i] or "PAGE TOP" in lines[i]:
+            end = i
+            break
 
-    chunk = lines[start:start + 24]
-    for i, line in enumerate(chunk):
-        m = re.search(r"気温\s*([0-9.]+℃)", line)
-        if m:
-            weather["air_temperature"] = m.group(1)
+    text = clean(" ".join(lines[start:end]))
 
-        m = re.search(r"風速\s*([0-9.]+m)", line)
-        if m:
-            weather["wind_speed"] = m.group(1)
+    m = re.search(r"水面気象情報\s*([0-9R時点:]+)?", text)
+    if m:
+        weather["time"] = clean(m.group(1) or "")
 
-        m = re.search(r"水温\s*([0-9.]+℃)", line)
-        if m:
-            weather["water_temperature"] = m.group(1)
+    m = re.search(r"気温\s*([0-9.]+℃)", text)
+    if m:
+        weather["air_temperature"] = m.group(1)
 
-        m = re.search(r"波高\s*([0-9.]+cm)", line)
-        if m:
-            weather["wave_height"] = m.group(1)
+    m = re.search(r"(晴|曇り|曇|雨|雪)", text)
+    if m:
+        weather["weather"] = m.group(1)
 
-        if any(w in line for w in ["晴", "曇", "曇り", "雨", "雪"]):
-            if not any(key in line for key in ["気温", "水温", "風速", "波高"]):
-                weather["weather"] = line
+    m = re.search(r"風速\s*([0-9.]+m)", text)
+    if m:
+        weather["wind_speed"] = m.group(1)
 
-        if any(w in line for w in ["向かい風", "追い風", "右横風", "左横風", "無風", "北", "南", "東", "西"]):
-            if "Image" not in line and not any(key in line for key in ["気温", "水温", "風速", "波高"]):
-                weather["wind_direction"] = line
+    m = re.search(r"水温\s*([0-9.]+℃)", text)
+    if m:
+        weather["water_temperature"] = m.group(1)
+
+    m = re.search(r"波高\s*([0-9.]+cm)", text)
+    if m:
+        weather["wave_height"] = m.group(1)
+
+    for word in ["向かい風", "追い風", "右横風", "左横風", "無風", "北", "南", "東", "西"]:
+        if word in text:
+            weather["wind_direction"] = word
+            break
 
     return weather
 
+
+
 def parse_start_exhibition(lines: list[str]) -> tuple[list[dict[str, Any]], dict[int, dict[str, Any]]]:
-    """
-    スタート展示の並びとSTを取得。
-    公式テキストは「スタート展示」「コース 並び ST」の後に
-    1 Image F.10
-    3 Image F.02
-    のように出る。先頭数字を艇番、行順を展示コースとして扱う。
-    """
     start = None
     for i, line in enumerate(lines):
-        if line == "スタート展示" or "スタート展示" in line:
+        if "スタート展示" in line:
             start = i
             break
 
     if start is None:
         return [], {}
 
-    result: list[dict[str, Any]] = []
-    by_boat: dict[int, dict[str, Any]] = {}
-
-    course = 1
-    for line in lines[start:start + 40]:
-        m = re.search(r"^([1-6])\s+(?:Image\s+)?(F?\.\d{2})", line)
-        if not m:
-            continue
-
-        boat = int(m.group(1))
-        st = m.group(2)
-
-        row = {
-            "course": course,
-            "boat": boat,
-            "st": st,
-        }
-        result.append(row)
-        by_boat[boat] = {
-            "exhibition_course": str(course),
-            "exhibition_st": st,
-        }
-        course += 1
-
-        if course > 6:
-            break
-
-    return result, by_boat
-
-def parse_beforeinfo_entries(lines: list[str]) -> dict[int, dict[str, Any]]:
-    """
-    直前情報テーブルから艇ごとの展示タイム・チルトなどを拾う。
-    Webテキストでは以下のような行が出る：
-    1 Image 今泉 徹 52.0kg 6.81 0.0
-    6 Image 木村 浩士 55.7kg 6.87 0.0
-    """
-    out: dict[int, dict[str, Any]] = {}
-
-    # 直前情報テーブル周辺だけを見る
-    start = 0
-    for i, line in enumerate(lines):
-        if "枠" in line and "写真" in line and "ボートレーサー" in line:
-            start = i
-            break
-
     end = len(lines)
     for i in range(start + 1, len(lines)):
-        if "部品交換凡例" in lines[i] or "スタート展示" in lines[i]:
+        if "水面気象情報" in lines[i] or "スマートフォン版" in lines[i] or "PAGE TOP" in lines[i]:
             end = i
             break
 
-    chunk = lines[start:end]
+    text = clean(" ".join(lines[start:end]))
 
-    row_pattern = re.compile(
-        r"^([1-6])\s+(?:Image\s+)?(.+?)\s+([0-9.]+kg)\s+([0-9]\.\d{2})\s+([-+]?\d+\.\d+)(.*)$"
-    )
+    result: list[dict[str, Any]] = []
+    by_boat: dict[int, dict[str, Any]] = {}
 
-    for line in chunk:
-        m = row_pattern.search(line)
-        if not m:
+    pattern = re.compile(r"(?:^|\s)([1-6])\s+(?:Image\s+)?(F?\.\d{2})(?=\s|$)")
+    course = 1
+
+    for m in pattern.finditer(text):
+        if course > 6:
+            break
+        boat = int(m.group(1))
+        st = m.group(2)
+        result.append({"course": course, "boat": boat, "st": st})
+        by_boat[boat] = {"exhibition_course": str(course), "exhibition_st": st}
+        course += 1
+
+    return result, by_boat
+
+
+
+def parse_beforeinfo_entries(lines: list[str]) -> dict[int, dict[str, Any]]:
+    """
+    展示タイム・チルト取得の修正版。
+    公式の直前情報は、行によって
+    「1 Image 選手名 52.0kg 6.81 -0.5」
+    の横並びにも、
+    「1 / Image / 選手名 / 52.0kg / 6.81 / -0.5」
+    の縦並びにも見えるため、テキスト結合後に艇ごとのブロックとして読む。
+    """
+    out: dict[int, dict[str, Any]] = {}
+
+    start = 0
+    for i, line in enumerate(lines):
+        if "ボートレーサー" in line and ("体重" in line or "展示" in line):
+            start = i
+            break
+        if line == "枠":
+            start = i
+
+    end = len(lines)
+    for i in range(start + 1, len(lines)):
+        if "部品交換凡例" in lines[i] or "スタート展示" in lines[i] or "水面気象情報" in lines[i]:
+            end = i
+            break
+
+    text = clean(" ".join(lines[start:end]))
+
+    starts = list(re.finditer(r"(?:^|\s)([1-6])\s+(?:Image\s+)?", text))
+
+    for idx, m in enumerate(starts):
+        boat = int(m.group(1))
+        if boat < 1 or boat > 6:
             continue
 
-        boat = int(m.group(1))
-        name = clean(m.group(2))
-        rest = clean(m.group(6))
+        block_start = m.end()
+        block_end = starts[idx + 1].start() if idx + 1 < len(starts) else len(text)
+        block = clean(text[block_start:block_end])
 
-        # 部品交換・プロペラ新などが取れたら入れる。無ければ空欄。
-        propeller = "新" if "新" in rest else ""
-        parts_exchange = ""
+        row = re.search(
+            r"([一-龥ぁ-んァ-ンー・\s]{2,30}?)\s+([0-9]{2,3}\.\dkg)\s+([0-9]\.\d{2})\s+([-+]?\d+\.\d)",
+            block
+        )
+        if not row:
+            continue
+
+        name = clean(row.group(1))
+        name = re.sub(r"^(写真|Image)\s*", "", name)
+        weight = row.group(2)
+        exhibition_time = row.group(3)
+        tilt = row.group(4)
+
+        after = block[row.end():]
+        propeller = "新" if re.search(r"(?:^|\s)新(?:\s|$)", after) else ""
+
         parts_keywords = ["ピストン", "リング", "電気", "キャブ", "シリンダ", "シャフト", "ギヤ", "キャリボ"]
-        found_parts = [p for p in parts_keywords if p in rest]
-        if found_parts:
-            parts_exchange = " / ".join(found_parts)
+        found_parts = [p for p in parts_keywords if p in after]
+        parts_exchange = " / ".join(found_parts)
 
         out[boat] = {
             "beforeinfo_name": name,
-            "weight": m.group(3),
-            "exhibition_time": m.group(4),
-            "tilt": m.group(5),
+            "weight": weight,
+            "exhibition_time": exhibition_time,
+            "tilt": tilt,
             "propeller": propeller,
             "parts_exchange": parts_exchange,
         }
 
     return out
+
+
 
 def parse_beforeinfo(html: str) -> dict[str, Any]:
     soup = BeautifulSoup(html, "html.parser")
@@ -246,15 +264,46 @@ def parse_beforeinfo(html: str) -> dict[str, Any]:
     for boat, v in start_by_boat.items():
         entry_map.setdefault(boat, {}).update(v)
 
-    available = bool(entry_map or weather or start_exhibition)
+    ex_time_count = sum(1 for v in entry_map.values() if v.get("exhibition_time"))
+    ex_st_count = sum(1 for v in entry_map.values() if v.get("exhibition_st"))
+    weather_ok = bool(weather.get("wind_speed") or weather.get("wave_height") or weather.get("air_temperature"))
+
+    available = ex_time_count > 0 or ex_st_count > 0 or weather_ok
 
     return {
-        "status": "取得済み" if available else "未取得",
-        "reason": "" if available else "直前情報の主要項目が未掲載",
+        "status": "取得済み" if available else "未掲載",
+        "reason": "" if available else "直前情報の主要項目が未掲載または解析不可",
         "entries": entry_map,
         "weather": weather,
         "start_exhibition": start_exhibition,
     }
+
+
+
+
+def extract_beforeinfo_source_snippet(html: str, place: str, rno: int) -> str:
+    soup = BeautifulSoup(html, "html.parser")
+    lines = soup_lines(soup)
+
+    start = 0
+    for i, line in enumerate(lines):
+        if "直前情報" in line or line == "枠" or "ボートレーサー" in line:
+            start = max(0, i - 20)
+            break
+
+    end = min(len(lines), start + 280)
+    for i in range(start + 1, len(lines)):
+        if "スマートフォン版" in lines[i] or "PAGE TOP" in lines[i]:
+            end = min(len(lines), i + 20)
+            break
+
+    body = "\n".join(f"{idx:03d}: {line}" for idx, line in enumerate(lines[start:end], start=start))
+    return (
+        "--------------------------------------------------\n"
+        f"{place} {rno}R beforeinfo source\n"
+        "--------------------------------------------------\n"
+        + body
+    )
 
 def merge_beforeinfo_into_race(race: dict[str, Any], parsed: dict[str, Any], fetched_at: str) -> dict[str, Any]:
     if parsed.get("status") != "取得済み":
@@ -306,7 +355,7 @@ def target_races(data: list[dict[str, Any]], target: str) -> list[tuple[int, dic
         rows.append((idx, race))
     return rows
 
-def fetch_and_parse(task: tuple[int, dict[str, Any], str]) -> tuple[int, dict[str, Any], str]:
+def fetch_and_parse(task: tuple[int, dict[str, Any], str]) -> tuple[int, dict[str, Any], str, str]:
     idx, race, target = task
     place = race.get("place", "")
     jcd = PLACE_TO_JCD.get(place)
@@ -316,8 +365,9 @@ def fetch_and_parse(task: tuple[int, dict[str, Any], str]) -> tuple[int, dict[st
     html = fetch_url(url, timeout=12)
 
     if not html:
-        return idx, race, f"[NG] {place} {rno}R fetch failed"
+        return idx, race, f"[NG] {place} {rno}R fetch failed", ""
 
+    source_snippet = extract_beforeinfo_source_snippet(html, place, rno)
     parsed = parse_beforeinfo(html)
     fetched_at = now_jst().strftime("%Y-%m-%d %H:%M:%S")
     race = merge_beforeinfo_into_race(race, parsed, fetched_at)
@@ -327,7 +377,7 @@ def fetch_and_parse(task: tuple[int, dict[str, Any], str]) -> tuple[int, dict[st
     ex_st_count = sum(1 for e in entries if e.get("exhibition_st"))
     weather_ok = bool(race.get("weather", {}).get("wind_speed") or race.get("weather", {}).get("wave_height"))
 
-    return idx, race, f"[OK] {place} {rno}R beforeinfo={race.get('beforeinfo_status')} 展示T={ex_time_count}/6 展示ST={ex_st_count}/6 weather={'OK' if weather_ok else 'NG'}"
+    return idx, race, f"[OK] {place} {rno}R beforeinfo={race.get(\'beforeinfo_status\')} 展示T={ex_time_count}/6 展示ST={ex_st_count}/6 天気={\'OK\' if weather_ok else \'NG\'}", source_snippet
 
 def main() -> None:
     target = target_date()
@@ -342,6 +392,7 @@ def main() -> None:
     log(f"[INFO] target_date={target} target_races={len(rows)} workers={MAX_WORKERS}")
 
     debug: list[str] = []
+    source_debug: list[str] = []
     updated = 0
 
     tasks = [(idx, race, target) for idx, race in rows]
@@ -350,10 +401,12 @@ def main() -> None:
         future_map = {executor.submit(fetch_and_parse, task): task for task in tasks}
         for future in concurrent.futures.as_completed(future_map):
             try:
-                idx, race, line = future.result()
+                idx, race, line, source_snippet = future.result()
                 data[idx] = race
                 if race.get("beforeinfo_status") == "取得済み":
                     updated += 1
+                if source_snippet and ("展示T=0/6" in line or "展示ST=0/6" in line or "天気=NG" in line):
+                    source_debug.append(source_snippet)
             except Exception as e:
                 _, race, _ = future_map[future]
                 line = f"[ERROR] {race.get('place')} {race.get('race_no')} {e}"
@@ -384,6 +437,7 @@ def main() -> None:
 
     data_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     Path("debug-beforeinfo.txt").write_text("\n".join(debug), encoding="utf-8")
+    Path("debug-beforeinfo-source.txt").write_text("\n\n".join(source_debug[:30]), encoding="utf-8")
     log(f"updated beforeinfo races={updated}/{len(rows)}")
 
 if __name__ == "__main__":
