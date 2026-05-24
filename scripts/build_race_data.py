@@ -258,260 +258,226 @@ def parse_entry_by_class_line(frame: int, block: list[str]) -> dict[str, Any]:
 
 
 
-def safe_num_list(text: str) -> list[str]:
-    return re.findall(r"(?<![0-9])(?:\d+\.\d+|\.\d{2})(?![0-9])", text)
 
-def apply_numbers_to_entry(e: dict[str, Any], text: str) -> dict[str, Any]:
-    nums = safe_num_list(text)
+def is_frame_token(s: str) -> bool:
+    s = clean(s)
+    return s in {"1","2","3","4","5","6","１","２","３","４","５","６"}
 
-    avg_idx = None
-    for i, n in enumerate(nums):
-        try:
-            v = float("0" + n if n.startswith(".") else n)
-            if 0.01 <= v <= 0.40:
-                avg_idx = i
-                break
-        except Exception:
-            pass
+def frame_token_to_int(s: str) -> int:
+    s = clean(s)
+    if s in ZEN_NUM:
+        return ZEN_NUM[s]
+    return int(s)
 
-    if avg_idx is None:
-        return e
+def is_reg_no(s: str) -> bool:
+    return bool(re.fullmatch(r"\d{4}", clean(s)))
 
-    data_nums = nums[avg_idx:]
+def is_class_token(s: str) -> bool:
+    return bool(re.fullmatch(r"A1|A2|B1|B2", clean(s)))
 
-    if not e.get("avg_st") and len(data_nums) >= 1:
-        e["avg_st"] = data_nums[0]
-    if len(data_nums) >= 4:
-        if not e.get("national_2rate"):
-            e["national_2rate"] = data_nums[2]
-        if not e.get("national_3rate"):
-            e["national_3rate"] = data_nums[3]
-    if len(data_nums) >= 7:
-        if not e.get("local_2rate"):
-            e["local_2rate"] = data_nums[5]
-        if not e.get("local_3rate"):
-            e["local_3rate"] = data_nums[6]
-    if len(data_nums) >= 9:
-        if not e.get("motor_2rate"):
-            e["motor_2rate"] = data_nums[7]
-        if not e.get("motor_3rate"):
-            e["motor_3rate"] = data_nums[8]
-    if len(data_nums) >= 11:
-        if not e.get("boat_2rate"):
-            e["boat_2rate"] = data_nums[9]
-        if not e.get("boat_3rate"):
-            e["boat_3rate"] = data_nums[10]
+def is_branch_line(s: str) -> bool:
+    s = clean(s)
+    if "/" not in s:
+        return False
+    left = s.split("/", 1)[0]
+    return left in BRANCHES
 
+def is_age_weight_line(s: str) -> bool:
+    return bool(re.search(r"\d+歳\s*/\s*\d+(?:\.\d+)?kg", clean(s)))
+
+def is_fl_line(s: str, prefix: str) -> bool:
+    return bool(re.fullmatch(prefix + r"\d+", clean(s)))
+
+def next_nonempty(lines: list[str], idx: int) -> str:
+    return lines[idx] if 0 <= idx < len(lines) else ""
+
+def set_number_fields_from_sequence(e: dict[str, Any], vals: list[str]) -> dict[str, Any]:
+    # vals想定：
+    # avgST, 全国勝率, 全国2連率, 全国3連率,
+    # 当地勝率, 当地2連率, 当地3連率,
+    # モーターNo, モーター2連率, モーター3連率,
+    # ボートNo, ボート2連率, ボート3連率
+    if len(vals) >= 1:
+        e["avg_st"] = vals[0]
+    if len(vals) >= 4:
+        e["national_2rate"] = vals[2]
+        e["national_3rate"] = vals[3]
+    if len(vals) >= 7:
+        e["local_2rate"] = vals[5]
+        e["local_3rate"] = vals[6]
+    if len(vals) >= 10:
+        e["motor_no"] = vals[7]
+        e["motor_2rate"] = vals[8]
+        e["motor_3rate"] = vals[9]
+    if len(vals) >= 13:
+        e["boat_no_data"] = vals[10]
+        e["boat_2rate"] = vals[11]
+        e["boat_3rate"] = vals[12]
     return e
 
-def parse_entries_by_frame_regex(soup: BeautifulSoup) -> list[dict[str, Any]]:
+def parse_entries_by_vertical_lines(soup: BeautifulSoup) -> list[dict[str, Any]]:
+    """
+    BOATRACE公式のスマホ/テキスト化状態では、
+    1艇ごとに
+    枠 → 登録番号 → / → 級別 → 氏名 → 支部/出身地 → 年齢/体重 → F → L → 平均ST → 勝率...
+    と縦に並ぶ。
+    これをそのまま読む方式。names=5や平均ST '-' の欠損対策。
+    """
+    lines = soup_lines(soup)
+
+    # 出走表ヘッダー以降だけを見る
+    start = 0
+    for i, line in enumerate(lines):
+        if line == "枠" and i + 1 < len(lines):
+            start = i
+            break
+
+    entries: list[dict[str, Any]] = []
+    used_indexes = set()
+
+    for i in range(start, len(lines) - 12):
+        if i in used_indexes:
+            continue
+
+        if not is_frame_token(lines[i]):
+            continue
+
+        frame = frame_token_to_int(lines[i])
+        if frame < 1 or frame > 6:
+            continue
+
+        # 直後に 登録番号 / 級別 が並ぶ場所だけ採用
+        if not is_reg_no(next_nonempty(lines, i + 1)):
+            continue
+        if clean(next_nonempty(lines, i + 2)) != "/":
+            continue
+        if not is_class_token(next_nonempty(lines, i + 3)):
+            continue
+
+        name = clean(next_nonempty(lines, i + 4))
+        branch_line = clean(next_nonempty(lines, i + 5))
+        age_line = clean(next_nonempty(lines, i + 6))
+        f_line = clean(next_nonempty(lines, i + 7))
+        l_line = clean(next_nonempty(lines, i + 8))
+
+        if not name or not is_branch_line(branch_line):
+            continue
+        if not is_age_weight_line(age_line):
+            continue
+        if not is_fl_line(f_line, "F") or not is_fl_line(l_line, "L"):
+            continue
+
+        e = empty_entry(frame)
+        e["class"] = clean(lines[i + 3])
+        e["racer_name"] = name
+        e["branch"] = branch_line.split("/", 1)[0]
+        e["f_count"] = f_line.replace("F", "")
+        e["l_count"] = l_line.replace("L", "")
+
+        vals: list[str] = []
+        # L数の次から、平均STや各率を13個分拾う。平均STが「-」の場合も保存する。
+        j = i + 9
+        while j < len(lines) and len(vals) < 13:
+            s = clean(lines[j])
+
+            # 次の艇に入ったら止める
+            if len(vals) > 0 and is_frame_token(s):
+                if j + 3 < len(lines) and is_reg_no(lines[j + 1]) and clean(lines[j + 2]) == "/" and is_class_token(lines[j + 3]):
+                    break
+
+            # 数値または "-" を採用。モーターNo/ボートNoは整数も採用。
+            if s == "-" or re.fullmatch(r"\d+(?:\.\d+)?", s) or re.fullmatch(r"\.\d{2}", s):
+                vals.append(s)
+
+            j += 1
+
+        e = set_number_fields_from_sequence(e, vals)
+        entries.append(e)
+        used_indexes.update(range(i, j))
+
+        if len(entries) >= 6:
+            break
+
+    # 6艇取れたら順番で1〜6へ正規化。途中抜けがあれば枠番号優先。
+    if len(entries) == 6:
+        entries.sort(key=lambda x: x.get("frame", 99))
+        for idx, e in enumerate(entries, start=1):
+            e["frame"] = idx
+            e["boat_no"] = idx
+
+    by_frame = {e.get("frame"): e for e in entries}
+    return [by_frame.get(i, empty_entry(i)) for i in range(1, 7)]
+
+def parse_entries_by_regex_backup(soup: BeautifulSoup) -> list[dict[str, Any]]:
+    """
+    縦読みが失敗した時の保険。本文全体から登録番号/級別/氏名/支部を拾う。
+    """
     lines = soup_lines(soup)
     text = " ".join(lines)
     frame_chars = "1-6１-６"
     branch_pat = "|".join(BRANCHES)
-
     pattern = re.compile(
         rf"([{frame_chars}])\s+"
-        rf"(?:Image\s+)?"
         rf"(\d{{4}})\s*/\s*(A1|A2|B1|B2)\s+"
         rf"([一-龥ぁ-んァ-ンー・\s]{{2,28}}?)\s+"
         rf"(({branch_pat})/[^ ]+)"
     )
-
-    matches = list(pattern.finditer(text))
-    entries: list[dict[str, Any]] = []
-
-    for pos, m in enumerate(matches[:6]):
-        raw = m.group(1)
-        try:
-            frame = ZEN_NUM.get(raw, int(raw))
-        except Exception:
-            frame = pos + 1
-
-        e = empty_entry(frame)
-        e["class"] = m.group(3)
-        e["racer_name"] = clean(re.sub(r"\b(Image|写真)\b", "", m.group(4)))
-        e["branch"] = m.group(6)
-
-        block_start = m.end()
-        block_end = matches[pos + 1].start() if pos + 1 < len(matches) else len(text)
-        block = text[block_start:block_end]
-
-        f = re.search(r"\bF(\d+)\b", block)
-        l = re.search(r"\bL(\d+)\b", block)
-        if f:
-            e["f_count"] = f.group(1)
-        if l:
-            e["l_count"] = l.group(1)
-
-        e = apply_numbers_to_entry(e, block)
-        entries.append(e)
-
-    if len(entries) == 6:
-        for i, e in enumerate(entries, start=1):
-            e["frame"] = i
-            e["boat_no"] = i
-
-    by = {e["frame"]: e for e in entries}
-    return [by.get(i, empty_entry(i)) for i in range(1, 7)]
-
-def parse_entries_by_class_sequence(soup: BeautifulSoup) -> list[dict[str, Any]]:
-    lines = soup_lines(soup)
-
-    start = 0
-    for i, line in enumerate(lines):
-        if "枠" in line and "ボートレーサー" in line:
-            start = i
-            break
-
-    end = len(lines)
-    for i in range(start + 1, len(lines)):
-        if "今節成績" in lines[i]:
-            end = i
-            break
-
-    body = lines[start:end]
-
-    idxs: list[int] = []
-    for i, line in enumerate(body):
-        if re.fullmatch(r"\d{4}\s*/\s*(A1|A2|B1|B2)", line):
-            idxs.append(i)
-
-    idxs = idxs[:6]
-    entries: list[dict[str, Any]] = []
-
-    for pos, idx in enumerate(idxs):
-        frame = pos + 1
-        next_idx = idxs[pos + 1] if pos + 1 < len(idxs) else len(body)
-        block = body[idx:next_idx]
-        e = empty_entry(frame)
-
-        m = re.search(r"\b(\d{4})\s*/\s*(A1|A2|B1|B2)\b", block[0])
-        if m:
-            e["class"] = m.group(2)
-
-        # 選手名は級別行の後、支部/出身地の前までから一番自然な日本語名を拾う
-        name_parts = []
-        for line in block[1:10]:
-            if "/" in line and any(b in line for b in BRANCHES):
-                break
-            if re.search(r"\d", line):
-                continue
-            if line in BRANCHES or line in ["写真", "氏名", "全国", "当地", "モーター", "ボート"]:
-                continue
-            if re.fullmatch(r"[一-龥ぁ-んァ-ンー・]{1,8}", line):
-                name_parts.append(line)
-
-        if len(name_parts) >= 2:
-            e["racer_name"] = f"{name_parts[0]} {name_parts[1]}"
-        elif len(name_parts) == 1:
-            e["racer_name"] = name_parts[0]
-
-        for line in block:
-            if "/" in line:
-                left = clean(line.split("/", 1)[0])
-                if left in BRANCHES:
-                    e["branch"] = left
-                    break
-
-        block_text = " ".join(block)
-        f = re.search(r"\bF(\d+)\b", block_text)
-        l = re.search(r"\bL(\d+)\b", block_text)
-        if f:
-            e["f_count"] = f.group(1)
-        if l:
-            e["l_count"] = l.group(1)
-
-        e = apply_numbers_to_entry(e, block_text)
-        entries.append(e)
-
-    by = {e["frame"]: e for e in entries}
-    return [by.get(i, empty_entry(i)) for i in range(1, 7)]
-
-def parse_entries_by_no_frame_regex(soup: BeautifulSoup) -> list[dict[str, Any]]:
-    lines = soup_lines(soup)
-    text = " ".join(lines)
-    branch_pat = "|".join(BRANCHES)
-
-    pattern = re.compile(
-        rf"(?:^|\s)"
-        rf"(\d{{4}})\s*/\s*(A1|A2|B1|B2)\s+"
-        rf"([一-龥ぁ-んァ-ンー・\s]{{2,28}}?)\s+"
-        rf"(({branch_pat})/[^ ]+)"
-    )
-
     matches = list(pattern.finditer(text))[:6]
-    entries: list[dict[str, Any]] = []
-
+    entries = []
     for pos, m in enumerate(matches, start=1):
         e = empty_entry(pos)
-        e["class"] = m.group(2)
-        e["racer_name"] = clean(re.sub(r"\b(Image|写真)\b", "", m.group(3)))
-        e["branch"] = m.group(5)
-
+        e["class"] = m.group(3)
+        e["racer_name"] = clean(m.group(4))
+        e["branch"] = m.group(6)
         block_start = m.end()
         block_end = matches[pos].start() if pos < len(matches) else len(text)
         block = text[block_start:block_end]
-
         f = re.search(r"\bF(\d+)\b", block)
         l = re.search(r"\bL(\d+)\b", block)
-        if f:
-            e["f_count"] = f.group(1)
-        if l:
-            e["l_count"] = l.group(1)
-
-        e = apply_numbers_to_entry(e, block)
+        if f: e["f_count"] = f.group(1)
+        if l: e["l_count"] = l.group(1)
+        # 数字の順番補完
+        nums = re.findall(r"(?<![0-9])(?:\d+\.\d+|\.\d{2})(?![0-9])", block)
+        avg_idx = None
+        for k, n in enumerate(nums):
+            try:
+                v = float("0" + n if n.startswith(".") else n)
+                if 0.01 <= v <= 0.40:
+                    avg_idx = k
+                    break
+            except Exception:
+                pass
+        if avg_idx is not None:
+            data_nums = nums[avg_idx:]
+            vals = data_nums[:13]
+            e = set_number_fields_from_sequence(e, vals)
         entries.append(e)
-
     by = {e["frame"]: e for e in entries}
     return [by.get(i, empty_entry(i)) for i in range(1, 7)]
 
-def merge_entry_lists(*lists: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    merged: list[dict[str, Any]] = []
+def merge_entries(primary: list[dict[str, Any]], backup: list[dict[str, Any]]) -> list[dict[str, Any]]:
     keys = [
-        "racer_name", "class", "branch", "f_count", "l_count", "avg_st",
-        "national_2rate", "national_3rate", "local_2rate", "local_3rate",
-        "motor_2rate", "motor_3rate", "boat_2rate", "boat_3rate",
-        "exhibition_st", "exhibition_time"
+        "racer_name","class","branch","f_count","l_count","avg_st",
+        "national_2rate","national_3rate","local_2rate","local_3rate",
+        "motor_no","motor_2rate","motor_3rate","boat_no_data","boat_2rate","boat_3rate",
+        "exhibition_st","exhibition_time"
     ]
-
+    out = []
     for boat in range(1, 7):
-        base = empty_entry(boat)
-        for lst in lists:
-            if not lst or len(lst) < boat:
-                continue
-            cand = lst[boat - 1]
-            for k in keys:
-                if not base.get(k) and cand.get(k):
-                    base[k] = cand[k]
+        base = primary[boat-1] if len(primary) >= boat else empty_entry(boat)
+        b = backup[boat-1] if len(backup) >= boat else empty_entry(boat)
+        for k in keys:
+            if not base.get(k) and b.get(k):
+                base[k] = b[k]
         base["frame"] = boat
         base["boat_no"] = boat
-        merged.append(base)
-
-    return merged
-
-def repair_missing_entries(entries: list[dict[str, Any]], soup: BeautifulSoup) -> list[dict[str, Any]]:
-    """
-    欠損がある時だけ複数方式で再抽出して空欄補填。
-    """
-    has_missing = False
-    for e in entries:
-        if not e.get("racer_name") or not e.get("class") or not e.get("avg_st"):
-            has_missing = True
-            break
-
-    if not has_missing:
-        return entries
-
-    alt1 = parse_entries_by_frame_regex(soup)
-    alt2 = parse_entries_by_class_sequence(soup)
-    alt3 = parse_entries_by_no_frame_regex(soup)
-
-    return merge_entry_lists(entries, alt1, alt2, alt3)
+        out.append(base)
+    return out
 
 def parse_entries(soup: BeautifulSoup) -> list[dict[str, Any]]:
-    primary = parse_entries_by_frame_regex(soup)
-    return repair_missing_entries(primary, soup)
+    primary = parse_entries_by_vertical_lines(soup)
+    backup = parse_entries_by_regex_backup(soup)
+    return merge_entries(primary, backup)
 
 
 def to_float(v: Any, default: float = 0.0) -> float:
@@ -652,7 +618,7 @@ def parse_race(date: str, jcd: str, rno: int, html: str) -> dict[str, Any] | Non
         "time_zone": tz,
         "distance": "1800m",
         "status": "分析済み",
-        "detail_level": "github_actions_debug_snippets_v1",
+        "detail_level": "github_actions_vertical_line_parser_v1",
         "entries": entries,
         "_source_snippet": extract_source_snippet(soup),
         **analysis,
