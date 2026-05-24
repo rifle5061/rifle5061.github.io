@@ -41,7 +41,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add race-data.json debug-beforeinfo.txt
+          git add race-data.json debug-beforeinfo.txt debug-beforeinfo-source.txt
           if git diff --cached --quiet; then
             echo "No changes"
           else
