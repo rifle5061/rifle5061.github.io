@@ -32,6 +32,7 @@ BASE_RACELIST_URL = "https://www.boatrace.jp/owpc/pc/race/racelist"
 BASE_INDEX_URL = "https://www.boatrace.jp/owpc/pc/race/index"
 
 BRANCHES = ["群馬","埼玉","東京","静岡","愛知","三重","福井","滋賀","大阪","兵庫","徳島","香川","岡山","広島","山口","福岡","佐賀","長崎"]
+ZEN_NUM = {"１": 1, "２": 2, "３": 3, "４": 4, "５": 5, "６": 6}
 MAX_WORKERS = 6
 
 def log(msg: str) -> None:
