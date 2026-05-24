@@ -256,41 +256,98 @@ def parse_entry_by_class_line(frame: int, block: list[str]) -> dict[str, Any]:
     return e
 
 def parse_entries(soup: BeautifulSoup) -> list[dict[str, Any]]:
+    """
+    公式ページのテキストはおおむね
+    枠 → 登録番号/級別 → 氏名 → 支部/出身地 → 年齢/体重 → F/L → 平均ST...
+    の順で並ぶ。
+    table構造や枠行ではなく、この連続パターンを本文全体から直接拾う。
+    """
     lines = soup_lines(soup)
+    text = " ".join(lines)
 
-    # 出走表ヘッダー〜今節成績の間に絞る
-    start = 0
-    for i, line in enumerate(lines):
-        if "枠" in line and "ボートレーサー" in line:
-            start = i
-            break
+    frame_chars = "1-6１-６"
+    branch_pat = "|".join(BRANCHES)
 
-    end = len(lines)
-    for i in range(start + 1, len(lines)):
-        if "今節成績" in lines[i]:
-            end = i
-            break
+    # 例:
+    # １ 3827 / B1 今泉 徹 群馬/群馬 52歳/52.0kg F0 L0 0.17 3.93 ...
+    pattern = re.compile(
+        rf"([{frame_chars}])\s+"
+        rf"(?:Image\s+)?"
+        rf"(\d{{4}})\s*/\s*(A1|A2|B1|B2)\s+"
+        rf"([一-龥ぁ-んァ-ンー・]{{1,8}}\s+[一-龥ぁ-んァ-ンー・]{{1,8}})\s+"
+        rf"(({branch_pat})/[^ ]+)"
+    )
 
-    body = lines[start:end]
-
-    # 登録番号/級別行を6つ拾う。これが最も安定する。
-    class_indexes: list[int] = []
-    for i, line in enumerate(body):
-        if re.fullmatch(r"\d{4}\s*/\s*(A1|A2|B1|B2)", line):
-            class_indexes.append(i)
-
-    # 念のため6つ以上あっても先頭6つ
-    class_indexes = class_indexes[:6]
+    matches = list(pattern.finditer(text))
 
     entries: list[dict[str, Any]] = []
-    for pos, idx in enumerate(class_indexes):
-        frame = pos + 1
-        next_idx = class_indexes[pos + 1] if pos + 1 < len(class_indexes) else len(body)
-        block = body[idx:next_idx]
-        entries.append(parse_entry_by_class_line(frame, block))
+    for pos, m in enumerate(matches[:6]):
+        frame_raw = m.group(1)
+        frame = ZEN_NUM.get(frame_raw, None)
+        if frame is None:
+            try:
+                frame = int(frame_raw)
+            except Exception:
+                frame = pos + 1
+
+        e = empty_entry(frame)
+        e["class"] = m.group(3)
+        e["racer_name"] = clean(m.group(4))
+        e["branch"] = m.group(6)
+
+        block_start = m.end()
+        block_end = matches[pos + 1].start() if pos + 1 < len(matches) else len(text)
+        block_text = text[block_start:block_end]
+
+        f = re.search(r"\bF(\d+)\b", block_text)
+        l = re.search(r"\bL(\d+)\b", block_text)
+        if f:
+            e["f_count"] = f.group(1)
+        if l:
+            e["l_count"] = l.group(1)
+
+        nums = re.findall(r"(?<![0-9])(?:\d+\.\d+|\.\d{2})(?![0-9])", block_text)
+
+        # 平均STは0.10〜0.30台が多い。最初に現れる0.xxを平均STとして採用
+        avg_idx = None
+        for i, n in enumerate(nums):
+            try:
+                v = float("0" + n if n.startswith(".") else n)
+                if 0.01 <= v <= 0.40:
+                    avg_idx = i
+                    break
+            except Exception:
+                pass
+
+        if avg_idx is not None:
+            data_nums = nums[avg_idx:]
+            # 想定: [avg_st, national_win, national_2, national_3, local_win, local_2, local_3, motor_2, motor_3, boat_2, boat_3]
+            if len(data_nums) >= 1:
+                e["avg_st"] = data_nums[0]
+            if len(data_nums) >= 4:
+                e["national_2rate"] = data_nums[2]
+                e["national_3rate"] = data_nums[3]
+            if len(data_nums) >= 7:
+                e["local_2rate"] = data_nums[5]
+                e["local_3rate"] = data_nums[6]
+            if len(data_nums) >= 9:
+                e["motor_2rate"] = data_nums[7]
+                e["motor_3rate"] = data_nums[8]
+            if len(data_nums) >= 11:
+                e["boat_2rate"] = data_nums[9]
+                e["boat_3rate"] = data_nums[10]
+
+        entries.append(e)
+
+    # フレーム番号が取れない/ズレる時の保険として、順番で1〜6に補正
+    if len(entries) == 6:
+        for i, e in enumerate(entries, start=1):
+            e["frame"] = i
+            e["boat_no"] = i
 
     by_frame = {e["frame"]: e for e in entries}
     return [by_frame.get(i, empty_entry(i)) for i in range(1, 7)]
+
 
 def to_float(v: Any, default: float = 0.0) -> float:
     try:
@@ -407,7 +464,7 @@ def parse_race(date: str, jcd: str, rno: int, html: str) -> dict[str, Any] | Non
         "time_zone": tz,
         "distance": "1800m",
         "status": "分析済み",
-        "detail_level": "github_actions_classline_parser_v1",
+        "detail_level": "github_actions_regex_parser_v1",
         "entries": entries,
         **analysis,
         "summary": summary,
