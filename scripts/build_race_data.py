@@ -30,6 +30,9 @@ TIME_ZONE_BY_PLACE = {
 BASE_RACELIST_URL = "https://www.boatrace.jp/owpc/pc/race/racelist"
 BASE_INDEX_URL = "https://www.boatrace.jp/owpc/pc/race/index"
 
+ZEN_NUM = {"１": 1, "２": 2, "３": 3, "４": 4, "５": 5, "６": 6}
+BRANCHES = ["群馬","埼玉","東京","静岡","愛知","三重","福井","滋賀","大阪","兵庫","徳島","香川","岡山","広島","山口","福岡","佐賀","長崎"]
+
 def log(msg: str) -> None:
     print(msg, flush=True)
 
@@ -47,11 +50,11 @@ def clean(s: str) -> str:
 
 def fetch_url(url: str, timeout: int = 25) -> str | None:
     headers = {
-        "User-Agent": "Mozilla/5.0 (compatible; BoatAIRiskLab/0.7; +https://rifle5061.github.io/boat-ai-risk-lab/)"
+        "User-Agent": "Mozilla/5.0 (compatible; BoatAIRiskLab/0.8; +https://rifle5061.github.io/boat-ai-risk-lab/)"
     }
 
     last_error = None
-    for attempt in range(1, 3):
+    for attempt in range(1, 4):
         try:
             res = requests.get(url, headers=headers, timeout=timeout)
             res.raise_for_status()
@@ -66,21 +69,16 @@ def fetch_url(url: str, timeout: int = 25) -> str | None:
     return None
 
 def target_jcds_from_official_index(date: str) -> list[str]:
-    """
-    BOATRACE公式の本日/指定日のレース一覧ページから開催場コードを抽出する。
-    ここで取れた場だけ1R〜12Rを取得するので、無駄な24場巡回を避ける。
-    """
     urls = [
         f"{BASE_INDEX_URL}?hd={date}",
         BASE_INDEX_URL,
     ]
 
     for url in urls:
-        html = fetch_url(url, timeout=12)
+        html = fetch_url(url, timeout=25)
         if not html:
             continue
 
-        # 公式ページ内のリンクから jcd=XX を拾う
         found = sorted(set(re.findall(r"[?&]jcd=(\d{2})", html)))
         found = [x for x in found if x in JCD_MAP]
 
@@ -89,7 +87,6 @@ def target_jcds_from_official_index(date: str) -> list[str]:
             log(f"[INFO] target venues from official index: {', '.join(places)}")
             return found
 
-        # 念のため、場名が本文に出ている場合も拾う
         text = BeautifulSoup(html, "html.parser").get_text("\n")
         places_found = []
         for jcd, place in JCD_MAP.items():
@@ -119,17 +116,14 @@ def target_jcds_from_existing_racedata(date: str) -> list[str]:
     return []
 
 def target_jcds(date: str) -> list[str]:
-    # 1. 公式の開催中/開催日一覧から判定
     jcds = target_jcds_from_official_index(date)
     if jcds:
         return jcds
 
-    # 2. 公式一覧が取れない場合は、既存race-data.jsonの場だけ
     jcds = target_jcds_from_existing_racedata(date)
     if jcds:
         return jcds
 
-    # 3. 最後の保険だけ全場
     log("[WARN] no target venues found. fallback to all 24 venues.")
     return list(JCD_MAP.keys())
 
@@ -137,28 +131,30 @@ def fetch_racelist_html(date: str, jcd: str, rno: int) -> str | None:
     url = f"{BASE_RACELIST_URL}?hd={date}&jcd={jcd}&rno={rno}"
     return fetch_url(url, timeout=25)
 
-def parse_deadline(text: str) -> str:
-    for pat in [
-        r"締切予定時刻\s*([0-9]{1,2}:[0-9]{2})",
-        r"締切予定\s*([0-9]{1,2}:[0-9]{2})",
-        r"締切\s*([0-9]{1,2}:[0-9]{2})",
-    ]:
-        m = re.search(pat, text)
-        if m:
-            return m.group(1)
+def soup_lines(soup: BeautifulSoup) -> list[str]:
+    return [clean(x) for x in soup.get_text("\n").split("\n") if clean(x)]
+
+def parse_deadline(lines: list[str], rno: int) -> str:
+    for line in lines:
+        if "締切予定時刻" in line:
+            times = re.findall(r"\b([0-2]?[0-9]:[0-5][0-9])\b", line)
+            if 1 <= rno <= len(times):
+                return times[rno - 1]
+            if times:
+                return times[0]
+
+    text = " ".join(lines)
     times = re.findall(r"\b([0-2]?[0-9]:[0-5][0-9])\b", text)
+    if 1 <= rno <= len(times):
+        return times[rno - 1]
     return times[0] if times else ""
 
 def race_grade(text: str) -> str:
     upper = text.upper()
-    if "SG" in upper:
-        return "SG"
-    if "G1" in upper or "Ｇ１" in upper:
-        return "G1"
-    if "G2" in upper or "Ｇ２" in upper:
-        return "G2"
-    if "G3" in upper or "Ｇ３" in upper:
-        return "G3"
+    if "SG" in upper: return "SG"
+    if "G1" in upper or "Ｇ１" in upper: return "G1"
+    if "G2" in upper or "Ｇ２" in upper: return "G2"
+    if "G3" in upper or "Ｇ３" in upper: return "G3"
     return ""
 
 def empty_entry(frame: int) -> dict[str, Any]:
@@ -172,98 +168,127 @@ def empty_entry(frame: int) -> dict[str, Any]:
         "exhibition_st": "", "exhibition_time": "",
     }
 
-def cell_lines(cell) -> list[str]:
-    return [clean(x) for x in cell.get_text("\n").split("\n") if clean(x)]
+def frame_line_to_int(line: str) -> int | None:
+    s = clean(line)
+    if s in ZEN_NUM:
+        return ZEN_NUM[s]
+    if re.fullmatch(r"[1-6]", s):
+        return int(s)
+    return None
 
-def parse_row(cells: list[list[str]], frame: int) -> dict[str, Any]:
+def is_name_line(line: str) -> bool:
+    if "/" in line:
+        return False
+    if line in BRANCHES:
+        return False
+    if line in ["全国","当地","モーター","ボート","勝率","2連率","3連率","写真","氏名"]:
+        return False
+    # 選手名は「今泉 徹」「松下 誉士」のような形が多い
+    return bool(re.fullmatch(r"[一-龥ぁ-んァ-ンー・]+(?:\s+[一-龥ぁ-んァ-ンー・]+){0,2}", line)) and len(line.replace(" ", "")) >= 2
+
+def decimals(line: str) -> list[str]:
+    # 0.17 / 57.45 / .17 など。平均STや率の抽出用。
+    return re.findall(r"(?<![0-9])(?:\d+\.\d+|\.\d{2})(?![0-9])", line)
+
+def parse_block(frame: int, block: list[str]) -> dict[str, Any]:
     e = empty_entry(frame)
-    flat = [x for c in cells for x in c]
-    joined = " ".join(flat)
 
-    m = re.search(r"\b(A1|A2|B1|B2)\b", joined)
-    if m:
-        e["class"] = m.group(1)
-
-    branches = ["群馬","埼玉","東京","静岡","愛知","三重","福井","滋賀","大阪","兵庫","徳島","香川","岡山","広島","山口","福岡","佐賀","長崎"]
-    for b in branches:
-        if b in flat:
-            e["branch"] = b
+    # 登録番号/級別
+    cls_idx = None
+    for i, line in enumerate(block):
+        m = re.search(r"\b(\d{4})\s*/\s*(A1|A2|B1|B2)\b", line)
+        if m:
+            e["class"] = m.group(2)
+            cls_idx = i
             break
 
-    for token in flat:
-        if re.fullmatch(r"[一-龥ぁ-んァ-ンー・]{2,10}", token):
-            if token not in branches and token not in ["全国","当地","モーター","ボート","勝率","2連率","3連率"]:
-                e["racer_name"] = token
+    search_from = cls_idx + 1 if cls_idx is not None else 0
+
+    # 選手名
+    for line in block[search_from:search_from + 8]:
+        if is_name_line(line):
+            e["racer_name"] = line
+            break
+
+    # 支部
+    for line in block:
+        if "/" in line:
+            left = line.split("/", 1)[0]
+            if left in BRANCHES:
+                e["branch"] = left
                 break
 
-    f = re.search(r"F\s*([0-9])", joined)
-    l = re.search(r"L\s*([0-9])", joined)
-    if f:
-        e["f_count"] = f.group(1)
-    if l:
-        e["l_count"] = l.group(1)
+    # F/L
+    for line in block:
+        if re.fullmatch(r"F\d+", line):
+            e["f_count"] = line.replace("F", "")
+        if re.fullmatch(r"L\d+", line):
+            e["l_count"] = line.replace("L", "")
 
-    st = re.findall(r"(?<![0-9])\.([0-9]{2})(?![0-9])", joined)
-    if st:
-        e["avg_st"] = "." + st[0]
+    # 平均STと連率
+    avg_idx = None
+    nums: list[str] = []
+    for i, line in enumerate(block):
+        # 「0.17 3.93」のように平均ST＋全国勝率が出る行
+        if re.search(r"\b0\.\d{2}\b", line):
+            avg_idx = i
+            break
 
-    rates = re.findall(r"(?<![0-9])([0-9]{1,3}\.[0-9]{2})(?![0-9])", joined)
-    if len(rates) >= 12:
-        e["national_2rate"] = rates[1]
-        e["national_3rate"] = rates[2]
-        e["local_2rate"] = rates[4]
-        e["local_3rate"] = rates[5]
-        e["motor_2rate"] = rates[7]
-        e["motor_3rate"] = rates[8]
-        e["boat_2rate"] = rates[10]
-        e["boat_3rate"] = rates[11]
-    elif len(rates) >= 8:
-        e["national_2rate"] = rates[0]
-        e["national_3rate"] = rates[1]
-        e["local_2rate"] = rates[2]
-        e["local_3rate"] = rates[3]
-        e["motor_2rate"] = rates[4]
-        e["motor_3rate"] = rates[5]
-        e["boat_2rate"] = rates[6]
-        e["boat_3rate"] = rates[7]
+    if avg_idx is not None:
+        for line in block[avg_idx:]:
+            for n in decimals(line):
+                nums.append(n)
+            # 必要分を取ったら、今節STなどが混ざる前に止める
+            if len(nums) >= 11:
+                break
+
+    # nums: [avg_st, national_win, national_2, national_3, local_win, local_2, local_3, motor_2, motor_3, boat_2, boat_3]
+    if len(nums) >= 1:
+        e["avg_st"] = nums[0]
+    if len(nums) >= 4:
+        e["national_2rate"] = nums[2]
+        e["national_3rate"] = nums[3]
+    if len(nums) >= 7:
+        e["local_2rate"] = nums[5]
+        e["local_3rate"] = nums[6]
+    if len(nums) >= 9:
+        e["motor_2rate"] = nums[7]
+        e["motor_3rate"] = nums[8]
+    if len(nums) >= 11:
+        e["boat_2rate"] = nums[9]
+        e["boat_3rate"] = nums[10]
 
     return e
 
 def parse_entries(soup: BeautifulSoup) -> list[dict[str, Any]]:
-    candidates: list[dict[str, Any]] = []
+    lines = soup_lines(soup)
 
-    for table in soup.find_all("table"):
-        for tr in table.find_all("tr"):
-            raw_cells = tr.find_all(["td", "th"])
-            if len(raw_cells) < 4:
-                continue
+    # 出走表ヘッダー以降だけを見る
+    start = 0
+    for i, line in enumerate(lines):
+        if line.startswith("枠 ボートレーサー"):
+            start = i
+            break
 
-            cells = [cell_lines(c) for c in raw_cells]
-            flat = [x for c in cells for x in c]
-            if not flat:
-                continue
+    frame_indexes: list[tuple[int, int]] = []
+    for i in range(start, len(lines)):
+        frame = frame_line_to_int(lines[i])
+        if frame is not None:
+            # 「レース 1R 2R...」などの上部リンクを避けるため、登録番号/級別が近くにあるものだけ採用
+            nearby = " ".join(lines[i:i+12])
+            if re.search(r"\b\d{4}\s*/\s*(A1|A2|B1|B2)\b", nearby):
+                frame_indexes.append((frame, i))
 
-            first_text = " ".join(cells[0]) if cells else ""
-            m = re.search(r"^[\s　]*([1-6])[\s　]*$", first_text)
-            if not m:
-                m = re.search(r"^[\s　]*([1-6])[\s　]", " ".join(flat))
-            if not m:
-                continue
+    entries: list[dict[str, Any]] = []
+    for idx, (frame, start_i) in enumerate(frame_indexes):
+        end_i = frame_indexes[idx + 1][1] if idx + 1 < len(frame_indexes) else len(lines)
+        block = lines[start_i:end_i]
+        entries.append(parse_block(frame, block))
 
-            frame = int(m.group(1))
-            joined = " ".join(flat)
-
-            if not (re.search(r"\b(A1|A2|B1|B2)\b", joined) or re.search(r"\.[0-9]{2}", joined) or "モーター" in joined):
-                continue
-
-            if frame not in [x["frame"] for x in candidates]:
-                candidates.append(parse_row(cells, frame))
-
-    candidates.sort(key=lambda x: x["frame"])
-    if len(candidates) >= 6:
-        return candidates[:6]
-
-    return [empty_entry(i) for i in range(1, 7)]
+    # 1〜6が取れていれば返す
+    by_frame = {e["frame"]: e for e in entries}
+    final = [by_frame.get(i, empty_entry(i)) for i in range(1, 7)]
+    return final
 
 def to_float(v: Any, default: float = 0.0) -> float:
     try:
@@ -322,7 +347,7 @@ def analyze(entries: list[dict[str, Any]]) -> dict[str, Any]:
             "boat": i,
             "role": roles[i],
             "rank": rank,
-            "risk_note": f"{roles[i]}として評価。ST・選手成績・当地・モーター/ボートを確認。"
+            "risk_note": f"{roles[i]}として評価。平均ST・選手成績・当地・モーター/ボートを確認。"
         })
 
     score_map = {"S":100,"S-":96,"A+":94,"A":90,"A-":86,"B+":78,"B":72,"B-":66,"C+":58,"C":52,"C-":46,"D":35}
@@ -356,7 +381,8 @@ def analyze(entries: list[dict[str, Any]]) -> dict[str, Any]:
 
 def parse_race(date: str, jcd: str, rno: int, html: str) -> dict[str, Any] | None:
     soup = BeautifulSoup(html, "html.parser")
-    text = clean(soup.get_text("\n"))
+    lines = soup_lines(soup)
+    text = " ".join(lines)
 
     if len(text) < 500 or ("出走表" not in text and "モーター" not in text and "平均ST" not in text):
         return None
@@ -372,14 +398,14 @@ def parse_race(date: str, jcd: str, rno: int, html: str) -> dict[str, Any] | Non
         "date": date_hyphen(date),
         "place": place,
         "race_no": f"{rno}R",
-        "deadline": parse_deadline(text),
+        "deadline": parse_deadline(lines, rno),
         "event_title": "",
         "grade": grade,
         "event_grade": grade,
         "time_zone": tz,
         "distance": "1800m",
         "status": "分析済み",
-        "detail_level": "github_actions_auto_venues_v1",
+        "detail_level": "github_actions_line_parser_v1",
         "entries": entries,
         **analysis,
         "summary": summary,
