@@ -256,6 +256,98 @@ def parse_entry_by_class_line(frame: int, block: list[str]) -> dict[str, Any]:
     # モーターNo/ボートNoは「当地3連率」の後に整数が入るが、初期版では無理に使わない
     return e
 
+
+def fill_missing_entries(primary: list[dict[str, Any]], soup: BeautifulSoup) -> list[dict[str, Any]]:
+    """
+    CHECK_WARN自動補填。
+    primaryで選手名・級別・平均STなどが抜けた艇だけ、
+    フレーム番号なしの「登録番号/級別→氏名→支部」パターンで補助抽出して埋める。
+    """
+    lines = soup_lines(soup)
+    text = " ".join(lines)
+    branch_pat = "|".join(BRANCHES)
+
+    # フレーム番号に頼らず、登録番号/級別の並びだけで6艇分を拾う補助パターン
+    fallback_pattern = re.compile(
+        rf"(?:^|\s)"
+        rf"(\d{{4}})\s*/\s*(A1|A2|B1|B2)\s+"
+        rf"([一-龥ぁ-んァ-ンー・\s]{{2,24}}?)\s+"
+        rf"(({branch_pat})/[^ ]+)"
+    )
+
+    matches = list(fallback_pattern.finditer(text))[:6]
+    fallback: list[dict[str, Any]] = []
+
+    for pos, m in enumerate(matches, start=1):
+        e = empty_entry(pos)
+        e["class"] = m.group(2)
+        e["racer_name"] = clean(re.sub(r"\b(Image|写真)\b", "", m.group(3)))
+        e["branch"] = m.group(5)
+
+        block_start = m.end()
+        block_end = matches[pos].start() if pos < len(matches) else len(text)
+        block_text = text[block_start:block_end]
+
+        f = re.search(r"\bF(\d+)\b", block_text)
+        l = re.search(r"\bL(\d+)\b", block_text)
+        if f:
+            e["f_count"] = f.group(1)
+        if l:
+            e["l_count"] = l.group(1)
+
+        nums = re.findall(r"(?<![0-9])(?:\d+\.\d+|\.\d{2})(?![0-9])", block_text)
+        avg_idx = None
+        for i, n in enumerate(nums):
+            try:
+                v = float("0" + n if n.startswith(".") else n)
+                if 0.01 <= v <= 0.40:
+                    avg_idx = i
+                    break
+            except Exception:
+                pass
+
+        if avg_idx is not None:
+            data_nums = nums[avg_idx:]
+            if len(data_nums) >= 1:
+                e["avg_st"] = data_nums[0]
+            if len(data_nums) >= 4:
+                e["national_2rate"] = data_nums[2]
+                e["national_3rate"] = data_nums[3]
+            if len(data_nums) >= 7:
+                e["local_2rate"] = data_nums[5]
+                e["local_3rate"] = data_nums[6]
+            if len(data_nums) >= 9:
+                e["motor_2rate"] = data_nums[7]
+                e["motor_3rate"] = data_nums[8]
+            if len(data_nums) >= 11:
+                e["boat_2rate"] = data_nums[9]
+                e["boat_3rate"] = data_nums[10]
+
+        fallback.append(e)
+
+    # 1〜6艇で正規化
+    by_primary = {e.get("frame") or e.get("boat_no"): e for e in primary}
+    by_fallback = {e.get("frame") or e.get("boat_no"): e for e in fallback}
+
+    merged: list[dict[str, Any]] = []
+    for boat in range(1, 7):
+        base = by_primary.get(boat, empty_entry(boat))
+        fb = by_fallback.get(boat)
+
+        if fb:
+            # 空欄だけ補填。既に取れている値は壊さない。
+            for key, value in fb.items():
+                if key in ("frame", "boat_no"):
+                    continue
+                if not base.get(key) and value:
+                    base[key] = value
+
+        base["frame"] = boat
+        base["boat_no"] = boat
+        merged.append(base)
+
+    return merged
+
 def parse_entries(soup: BeautifulSoup) -> list[dict[str, Any]]:
     """
     names=5対策版。
@@ -351,7 +443,8 @@ def parse_entries(soup: BeautifulSoup) -> list[dict[str, Any]]:
             e["boat_no"] = i
 
     by_frame = {e["frame"]: e for e in entries}
-    return [by_frame.get(i, empty_entry(i)) for i in range(1, 7)]
+    primary = [by_frame.get(i, empty_entry(i)) for i in range(1, 7)]
+    return fill_missing_entries(primary, soup)
 
 
 def to_float(v: Any, default: float = 0.0) -> float:
@@ -469,7 +562,7 @@ def parse_race(date: str, jcd: str, rno: int, html: str) -> dict[str, Any] | Non
         "time_zone": tz,
         "distance": "1800m",
         "status": "分析済み",
-        "detail_level": "github_actions_names5_fallback_quality_v1",
+        "detail_level": "github_actions_auto_repair_quality_v1",
         "entries": entries,
         **analysis,
         "summary": summary,
