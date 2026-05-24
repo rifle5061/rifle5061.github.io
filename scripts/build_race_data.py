@@ -603,6 +603,29 @@ def analyze(entries: list[dict[str, Any]]) -> dict[str, Any]:
         "reserve_tickets": ["1-2-6","1-6-2","2-3-1","3-4-1","4-5-1"],
     }
 
+
+def extract_source_snippet(soup: BeautifulSoup) -> str:
+    """
+    欠損原因確認用。
+    出走表の周辺テキストを最大260行だけ保存する。
+    race-data.json本体には残さず、debug-source-snippets.txt用に使う。
+    """
+    lines = soup_lines(soup)
+
+    start = 0
+    for i, line in enumerate(lines):
+        if "枠" in line and ("ボートレーサー" in line or "登録番号" in line):
+            start = i
+            break
+
+    end = min(len(lines), start + 260)
+    for i in range(start + 1, len(lines)):
+        if "今節成績" in lines[i] or "早見" in lines[i]:
+            end = min(len(lines), i + 40)
+            break
+
+    return "\n".join(f"{idx:03d}: {line}" for idx, line in enumerate(lines[start:end], start=start))
+
 def parse_race(date: str, jcd: str, rno: int, html: str) -> dict[str, Any] | None:
     soup = BeautifulSoup(html, "html.parser")
     lines = soup_lines(soup)
@@ -629,8 +652,9 @@ def parse_race(date: str, jcd: str, rno: int, html: str) -> dict[str, Any] | Non
         "time_zone": tz,
         "distance": "1800m",
         "status": "分析済み",
-        "detail_level": "github_actions_multi_parser_repair_v1",
+        "detail_level": "github_actions_debug_snippets_v1",
         "entries": entries,
+        "_source_snippet": extract_source_snippet(soup),
         **analysis,
         "summary": summary,
         "analysis_text": f"GitHub Actionsで公式開催一覧から開催場を自動判定し、出走表主要データを取得。{summary}",
@@ -696,6 +720,39 @@ def build_quality_report(races: list[dict[str, Any]]) -> list[str]:
         report.append(f"... warn omitted: {len(warn_lines) - 80}")
     return report
 
+
+def build_source_snippet_report(races: list[dict[str, Any]]) -> list[str]:
+    """
+    CHECK_WARNが出るレースだけ、生テキスト断片を別ファイルに出す。
+    """
+    out: list[str] = []
+    out.append("===== SOURCE SNIPPETS FOR CHECK_WARN RACES =====")
+
+    for race in sorted(races, key=lambda r: (PLACE_TO_JCD.get(r.get("place",""), "99"), int(str(r.get("race_no","0R")).replace("R","") or 0))):
+        entries = race.get("entries", [])
+        issues = []
+
+        for e in entries:
+            boat = e.get("frame") or e.get("boat_no")
+            missing = []
+            if not e.get("racer_name"):
+                missing.append("選手名")
+            if not e.get("class"):
+                missing.append("級別")
+            if not e.get("avg_st"):
+                missing.append("平均ST")
+            if missing:
+                issues.append(f"{boat}号艇：" + "・".join(missing) + "なし")
+
+        if issues:
+            out.append("")
+            out.append("--------------------------------------------------")
+            out.append(f"{race.get('place')} {race.get('race_no')} / " + " / ".join(issues))
+            out.append("--------------------------------------------------")
+            out.append(str(race.get("_source_snippet", ""))[:12000])
+
+    return out
+
 def main() -> None:
     date = target_date()
     jcds = target_jcds(date)
@@ -728,6 +785,12 @@ def main() -> None:
         Path("debug-race-data.txt").write_text("\n".join(debug) + f"\n[ABORT] too few races: {len(races)}/{len(tasks)}", encoding="utf-8")
         log(f"[ABORT] too few races: {len(races)}/{len(tasks)}. race-data.json not overwritten.")
         return
+
+    Path("debug-source-snippets.txt").write_text("\n".join(build_source_snippet_report(races)), encoding="utf-8")
+
+    # race-data.jsonには内部確認用の生テキストを入れない
+    for race in races:
+        race.pop("_source_snippet", None)
 
     Path("race-data.json").write_text(json.dumps(races, ensure_ascii=False, indent=2), encoding="utf-8")
     debug.extend(build_quality_report(races))
