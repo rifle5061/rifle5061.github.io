@@ -377,7 +377,9 @@ def fetch_and_parse(task: tuple[int, dict[str, Any], str]) -> tuple[int, dict[st
     ex_st_count = sum(1 for e in entries if e.get("exhibition_st"))
     weather_ok = bool(race.get("weather", {}).get("wind_speed") or race.get("weather", {}).get("wave_height"))
 
-    return idx, race, f"[OK] {place} {rno}R beforeinfo={race.get(\'beforeinfo_status\')} 展示T={ex_time_count}/6 展示ST={ex_st_count}/6 天気={\'OK\' if weather_ok else \'NG\'}", source_snippet
+    status_text = "OK" if weather_ok else "NG"
+    line = f"[OK] {place} {rno}R beforeinfo={race.get('beforeinfo_status')} 展示T={ex_time_count}/6 展示ST={ex_st_count}/6 天気={status_text}"
+    return idx, race, line, source_snippet
 
 def main() -> None:
     target = target_date()
