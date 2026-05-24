@@ -87,54 +87,47 @@ def parse_weather(lines: list[str]) -> dict[str, Any]:
     if "安定板使用" in full_text:
         weather["stabilizer"] = "安定板使用"
 
-    start = 0
+    start = None
     for i, line in enumerate(lines):
         if "水面気象情報" in line:
             start = i
+            weather["time"] = clean(line.replace("水面気象情報", ""))
             break
 
-    end = len(lines)
+    if start is None:
+        return weather
+
+    end = min(len(lines), start + 30)
     for i in range(start + 1, len(lines)):
-        if "スマートフォン版" in lines[i] or "PAGE TOP" in lines[i]:
+        if "スマートフォン版" in lines[i] or "PAGE TOP" in lines[i] or "■ボートレース" in lines[i]:
             end = i
             break
 
-    text = clean(" ".join(lines[start:end]))
+    chunk = lines[start:end]
 
-    m = re.search(r"水面気象情報\s*([0-9R時点:]+)?", text)
-    if m:
-        weather["time"] = clean(m.group(1) or "")
-
-    m = re.search(r"気温\s*([0-9.]+℃)", text)
-    if m:
-        weather["air_temperature"] = m.group(1)
-
-    m = re.search(r"(晴|曇り|曇|雨|雪)", text)
-    if m:
-        weather["weather"] = m.group(1)
-
-    m = re.search(r"風速\s*([0-9.]+m)", text)
-    if m:
-        weather["wind_speed"] = m.group(1)
-
-    m = re.search(r"水温\s*([0-9.]+℃)", text)
-    if m:
-        weather["water_temperature"] = m.group(1)
-
-    m = re.search(r"波高\s*([0-9.]+cm)", text)
-    if m:
-        weather["wave_height"] = m.group(1)
-
-    for word in ["向かい風", "追い風", "右横風", "左横風", "無風", "北", "南", "東", "西"]:
-        if word in text:
-            weather["wind_direction"] = word
-            break
+    for i, line in enumerate(chunk):
+        if line == "気温" and i + 1 < len(chunk):
+            weather["air_temperature"] = chunk[i + 1]
+            if i + 2 < len(chunk) and any(w in chunk[i + 2] for w in ["晴", "曇", "曇り", "雨", "雪"]):
+                weather["weather"] = chunk[i + 2]
+        elif line == "風速" and i + 1 < len(chunk):
+            weather["wind_speed"] = chunk[i + 1]
+        elif line == "水温" and i + 1 < len(chunk):
+            weather["water_temperature"] = chunk[i + 1]
+        elif line == "波高" and i + 1 < len(chunk):
+            weather["wave_height"] = chunk[i + 1]
+        elif any(w in line for w in ["向かい風", "追い風", "右横風", "左横風", "無風"]):
+            weather["wind_direction"] = line
 
     return weather
 
 
 
 def parse_start_exhibition(lines: list[str]) -> tuple[list[dict[str, Any]], dict[int, dict[str, Any]]]:
+    """
+    スタート展示の実値がテキストに出ている場合だけ拾う。
+    今回のsourceでは見出しのみで、実値が出ていないレースが多い。
+    """
     start = None
     for i, line in enumerate(lines):
         if "スタート展示" in line:
@@ -150,22 +143,21 @@ def parse_start_exhibition(lines: list[str]) -> tuple[list[dict[str, Any]], dict
             end = i
             break
 
-    text = clean(" ".join(lines[start:end]))
-
+    chunk = lines[start:end]
     result: list[dict[str, Any]] = []
     by_boat: dict[int, dict[str, Any]] = {}
 
-    pattern = re.compile(r"(?:^|\s)([1-6])\s+(?:Image\s+)?(F?\.\d{2})(?=\s|$)")
+    # 1 .10 のような連続だけを拾う
     course = 1
-
-    for m in pattern.finditer(text):
-        if course > 6:
-            break
-        boat = int(m.group(1))
-        st = m.group(2)
-        result.append({"course": course, "boat": boat, "st": st})
-        by_boat[boat] = {"exhibition_course": str(course), "exhibition_st": st}
-        course += 1
+    for i, token in enumerate(chunk[:-1]):
+        if re.fullmatch(r"[1-6]", token) and re.fullmatch(r"F?\.\d{2}", chunk[i + 1]):
+            boat = int(token)
+            st = chunk[i + 1]
+            result.append({"course": course, "boat": boat, "st": st})
+            by_boat[boat] = {"exhibition_course": str(course), "exhibition_st": st}
+            course += 1
+            if course > 6:
+                break
 
     return result, by_boat
 
@@ -173,22 +165,17 @@ def parse_start_exhibition(lines: list[str]) -> tuple[list[dict[str, Any]], dict
 
 def parse_beforeinfo_entries(lines: list[str]) -> dict[int, dict[str, Any]]:
     """
-    展示タイム・チルト取得の修正版。
-    公式の直前情報は、行によって
-    「1 Image 選手名 52.0kg 6.81 -0.5」
-    の横並びにも、
-    「1 / Image / 選手名 / 52.0kg / 6.81 / -0.5」
-    の縦並びにも見えるため、テキスト結合後に艇ごとのブロックとして読む。
+    公式beforeinfoのテキストは、展示タイムが本文テキストに出ないケースがある。
+    そのため、ここでは確実に取れている「体重・チルト・部品交換」を優先して拾う。
+    展示タイムは本文に 6.80 のような値が出た場合だけ保存する。
     """
     out: dict[int, dict[str, Any]] = {}
 
     start = 0
     for i, line in enumerate(lines):
-        if "ボートレーサー" in line and ("体重" in line or "展示" in line):
-            start = i
-            break
         if line == "枠":
             start = i
+            break
 
     end = len(lines)
     for i in range(start + 1, len(lines)):
@@ -196,47 +183,58 @@ def parse_beforeinfo_entries(lines: list[str]) -> dict[int, dict[str, Any]]:
             end = i
             break
 
-    text = clean(" ".join(lines[start:end]))
+    chunk = lines[start:end]
 
-    starts = list(re.finditer(r"(?:^|\s)([1-6])\s+(?:Image\s+)?", text))
+    # 艇番行の位置を拾う。次行が選手名、次々行が体重なら艇データとして採用。
+    starts = []
+    for i, line in enumerate(chunk):
+        if re.fullmatch(r"[1-6]", line):
+            if i + 2 < len(chunk) and re.search(r"kg$", chunk[i + 2]):
+                starts.append(i)
 
-    for idx, m in enumerate(starts):
-        boat = int(m.group(1))
-        if boat < 1 or boat > 6:
-            continue
+    for pos, i in enumerate(starts):
+        boat = int(chunk[i])
+        block_end = starts[pos + 1] if pos + 1 < len(starts) else len(chunk)
+        block = chunk[i:block_end]
 
-        block_start = m.end()
-        block_end = starts[idx + 1].start() if idx + 1 < len(starts) else len(text)
-        block = clean(text[block_start:block_end])
-
-        row = re.search(
-            r"([一-龥ぁ-んァ-ンー・\s]{2,30}?)\s+([0-9]{2,3}\.\dkg)\s+([0-9]\.\d{2})\s+([-+]?\d+\.\d)",
-            block
-        )
-        if not row:
-            continue
-
-        name = clean(row.group(1))
-        name = re.sub(r"^(写真|Image)\s*", "", name)
-        weight = row.group(2)
-        exhibition_time = row.group(3)
-        tilt = row.group(4)
-
-        after = block[row.end():]
-        propeller = "新" if re.search(r"(?:^|\s)新(?:\s|$)", after) else ""
-
-        parts_keywords = ["ピストン", "リング", "電気", "キャブ", "シリンダ", "シャフト", "ギヤ", "キャリボ"]
-        found_parts = [p for p in parts_keywords if p in after]
-        parts_exchange = " / ".join(found_parts)
-
-        out[boat] = {
-            "beforeinfo_name": name,
-            "weight": weight,
-            "exhibition_time": exhibition_time,
-            "tilt": tilt,
-            "propeller": propeller,
-            "parts_exchange": parts_exchange,
+        e = {
+            "beforeinfo_name": clean(block[1]) if len(block) > 1 else "",
+            "weight": clean(block[2]) if len(block) > 2 else "",
+            "exhibition_time": "",
+            "tilt": "",
+            "propeller": "",
+            "parts_exchange": "",
         }
+
+        # 体重の直後からR/進入/ST/着順が出る前までを直前情報部分として見る
+        head_vals = []
+        for token in block[3:]:
+            if token in {"R", "進入", "ST", "着順"}:
+                break
+            head_vals.append(token)
+
+        # head_vals内の 6.xx は展示タイム、-0.5/0.0/0.5/1.0 などはチルト候補
+        for token in head_vals:
+            if re.fullmatch(r"[0-9]\.\d{2}", token):
+                e["exhibition_time"] = token
+            elif re.fullmatch(r"[-+]?\d+\.\d", token):
+                e["tilt"] = token
+            elif token == "新":
+                e["propeller"] = "新"
+            elif any(p in token for p in ["ピストン", "リング", "電気", "キャブ", "シリンダ", "シャフト", "ギヤ", "キャリボ"]):
+                e["parts_exchange"] = token
+
+        # 部品交換が体重直後に来るケースも拾う
+        parts = []
+        for token in block[3:]:
+            if token in {"R", "進入", "ST", "着順"}:
+                break
+            if any(p in token for p in ["ピストン", "リング", "電気", "キャブ", "シリンダ", "シャフト", "ギヤ", "キャリボ"]):
+                parts.append(token)
+        if parts:
+            e["parts_exchange"] = " / ".join(parts)
+
+        out[boat] = e
 
     return out
 
@@ -260,7 +258,6 @@ def parse_beforeinfo(html: str) -> dict[str, Any]:
     start_exhibition, start_by_boat = parse_start_exhibition(lines)
     weather = parse_weather(lines)
 
-    # 展示ST・展示コースを艇データに合流
     for boat, v in start_by_boat.items():
         entry_map.setdefault(boat, {}).update(v)
 
@@ -268,7 +265,7 @@ def parse_beforeinfo(html: str) -> dict[str, Any]:
     ex_st_count = sum(1 for v in entry_map.values() if v.get("exhibition_st"))
     weather_ok = bool(weather.get("wind_speed") or weather.get("wave_height") or weather.get("air_temperature"))
 
-    available = ex_time_count > 0 or ex_st_count > 0 or weather_ok
+    available = bool(entry_map) or weather_ok or ex_time_count > 0 or ex_st_count > 0
 
     return {
         "status": "取得済み" if available else "未掲載",
@@ -277,7 +274,6 @@ def parse_beforeinfo(html: str) -> dict[str, Any]:
         "weather": weather,
         "start_exhibition": start_exhibition,
     }
-
 
 
 
@@ -375,7 +371,7 @@ def fetch_and_parse(task: tuple[int, dict[str, Any], str]) -> tuple[int, dict[st
     entries = race.get("entries", [])
     ex_time_count = sum(1 for e in entries if e.get("exhibition_time"))
     ex_st_count = sum(1 for e in entries if e.get("exhibition_st"))
-    weather_ok = bool(race.get("weather", {}).get("wind_speed") or race.get("weather", {}).get("wave_height"))
+    weather_ok = bool(race.get("weather", {}).get("wind_speed") or race.get("weather", {}).get("wave_height") or race.get("weather", {}).get("air_temperature"))
 
     status_text = "OK" if weather_ok else "NG"
     line = f"[OK] {place} {rno}R beforeinfo={race.get('beforeinfo_status')} 展示T={ex_time_count}/6 展示ST={ex_st_count}/6 天気={status_text}"
@@ -430,7 +426,7 @@ def main() -> None:
             ex_time_races += 1
         if sum(1 for e in entries if e.get("exhibition_st")) >= 6:
             ex_st_races += 1
-        if race.get("weather", {}).get("wind_speed") or race.get("weather", {}).get("wave_height"):
+        if race.get("weather", {}).get("wind_speed") or race.get("weather", {}).get("wave_height") or race.get("weather", {}).get("air_temperature"):
             weather_races += 1
 
     debug.append(f"展示タイム6艇取得：{ex_time_races}")
