@@ -1,0 +1,28 @@
+[
+  {
+    "date": "2026-05-24",
+    "title": "出走表データ取得ロジックを縦並び解析方式に修正",
+    "type": "データ取得",
+    "summary": "公式BOAT RACE出走表の縦並びテキスト構造に対応し、全144レースの出走表主要データ取得を正常化。",
+    "details": [
+      "選手情報を「枠→登録番号→/→級別→氏名→支部/出身地→年齢/体重→F→L→平均ST→勝率…」の順で解析する方式に変更",
+      "平均STが公式で「-」の場合も欠損扱いせず「-」として保存",
+      "常滑5R、芦屋3R、大村5Rで発生していた欠損を解消",
+      "品質チェックで総レース数144、ノーマル144、要確認0を確認",
+      "SG/G1/G2/G3の誤表示を防ぐため、正確なグレード取得まではグレード表示を空欄固定"
+    ],
+    "result": "成功",
+    "quality_check": {
+      "total_races": 144,
+      "normal": 144,
+      "need_check": 0
+    },
+    "version": "build_race_data_vertical_line_parser.py",
+    "files": [
+      "scripts/build_race_data.py",
+      "race-data.json",
+      "debug-race-data.txt",
+      "debug-source-snippets.txt"
+    ]
+  }
+]
