@@ -450,7 +450,7 @@ def parse_race(date: str, jcd: str, rno: int, html: str) -> dict[str, Any] | Non
     place = JCD_MAP[jcd]
     entries = parse_entries(soup)
     analysis = analyze(entries)
-    grade = race_grade(text)
+    grade = ""  # SG/G1/G2/G3の全件誤表示対策。正確な開催グレード取得までは空欄固定。
     tz = TIME_ZONE_BY_PLACE.get(place, "デイ")
     summary = f"{place}{rno}Rは、1号艇信頼度{analysis['first_boat_reliability']}、荒れ度{analysis['roughness']}。AI上位4艇と艇別リスクを確認。"
 
@@ -465,7 +465,7 @@ def parse_race(date: str, jcd: str, rno: int, html: str) -> dict[str, Any] | Non
         "time_zone": tz,
         "distance": "1800m",
         "status": "分析済み",
-        "detail_level": "github_actions_regex_parser_v1",
+        "detail_level": "github_actions_regex_parser_no_false_grade_v1",
         "entries": entries,
         **analysis,
         "summary": summary,
