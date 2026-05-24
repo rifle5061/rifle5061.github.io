@@ -42,6 +42,67 @@ tr:last-child td{border-bottom:0}
 .err-list{display:grid;gap:8px;margin-top:12px}
 .err{border:1px solid rgba(255,122,122,.28);background:rgba(255,122,122,.08);border-radius:12px;padding:10px;color:#ffc7c7;font-size:13px}
 @media(max-width:860px){.grid,.grid4{grid-template-columns:1fr}.btn{width:100%}}
+
+/* 更新ログ / 修正履歴 */
+.changelog-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+}
+.changelog-item {
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.045);
+  border-radius: 18px;
+  padding: 16px;
+}
+.changelog-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.changelog-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 12px;
+  font-weight: 900;
+  background: rgba(47,227,255,.10);
+  border: 1px solid rgba(47,227,255,.28);
+  color: #d7edff;
+}
+.changelog-badge.success {
+  background: rgba(124,247,181,.10);
+  border-color: rgba(124,247,181,.28);
+  color: #c9ffe2;
+}
+.changelog-title {
+  font-size: 18px;
+  font-weight: 900;
+  margin: 0 0 6px;
+}
+.changelog-summary {
+  color: var(--muted);
+  margin: 0 0 10px;
+  line-height: 1.7;
+}
+.changelog-details {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  color: #d7edff;
+  line-height: 1.7;
+}
+.changelog-quality {
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(0,0,0,.18);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
 </style>
 </head>
 <body>
@@ -131,6 +192,14 @@ tr:last-child td{border-bottom:0}
     <button class="btn btn-primary" onclick="updateGithub()">GitHubのrace-data.jsonを上書き</button>
     <div id="githubStatus" class="notice">未送信です。</div>
   </div>
+
+  <div class="card" id="changelogSection">
+    <h2>7. 更新ログ / 修正履歴</h2>
+    <p class="small">データ取得ロジック、UI修正、品質チェック結果などを記録します。</p>
+    <div id="changelogStatus" class="notice">changelog.json を読み込みます。</div>
+    <div id="changelogList" class="changelog-list"></div>
+  </div>
+
 </div>
 
 <script>
@@ -369,6 +438,74 @@ function clearInput(){
   document.getElementById("raceList").innerHTML = "<table><tbody><tr><td>読み取り後に表示されます。</td></tr></tbody></table>";
 }
 
+
+function escLog(v) {
+  return String(v ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+async function loadChangelog() {
+  const status = document.getElementById("changelogStatus");
+  const list = document.getElementById("changelogList");
+
+  if (!status || !list) return;
+
+  try {
+    const res = await fetch("changelog.json?ts=" + Date.now());
+    if (!res.ok) throw new Error("changelog.json not found");
+
+    const logs = await res.json();
+    if (!Array.isArray(logs) || logs.length === 0) {
+      status.textContent = "更新ログはまだ登録されていません。";
+      return;
+    }
+
+    status.textContent = "登録ログ：" + logs.length + "件";
+
+    list.innerHTML = logs.map(log => {
+      const details = Array.isArray(log.details) ? log.details : [];
+      const quality = log.quality_check || {};
+      const files = Array.isArray(log.files) ? log.files : [];
+
+      return `
+        <article class="changelog-item">
+          <div class="changelog-meta">
+            <span class="changelog-badge">${escLog(log.date)}</span>
+            <span class="changelog-badge">${escLog(log.type || "更新")}</span>
+            <span class="changelog-badge success">${escLog(log.result || "")}</span>
+          </div>
+
+          <h3 class="changelog-title">${escLog(log.title)}</h3>
+          <p class="changelog-summary">${escLog(log.summary)}</p>
+
+          ${details.length ? `
+            <ul class="changelog-details">
+              ${details.map(d => `<li>${escLog(d)}</li>`).join("")}
+            </ul>
+          ` : ""}
+
+          <div class="changelog-quality">
+            <b>品質チェック：</b>
+            総レース数 ${escLog(quality.total_races ?? "-")} /
+            ノーマル ${escLog(quality.normal ?? "-")} /
+            要確認 ${escLog(quality.need_check ?? "-")}
+            <br>
+            <b>基準版：</b> ${escLog(log.version || "-")}
+            ${files.length ? `<br><b>関連ファイル：</b> ${files.map(f => escLog(f)).join(" / ")}` : ""}
+          </div>
+        </article>
+      `;
+    }).join("");
+
+  } catch (e) {
+    status.textContent = "changelog.json を読み込めませんでした。";
+  }
+}
+
 function unique(arr){return [...new Set(arr.filter(Boolean))];}
 function setText(id,v){document.getElementById(id).textContent = v;}
 function setStatus(id,msg,type){const e=document.getElementById(id);e.textContent=msg;e.className="notice " + (type || "");}
@@ -376,6 +513,7 @@ function val(id){return document.getElementById(id).value.trim();}
 function download(name, content, type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);}
 function base64EncodeUnicode(str){const bytes=new TextEncoder().encode(str);let bin="";bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin);}
 function esc(v){return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
+loadChangelog();
 </script>
 </body>
 </html>
