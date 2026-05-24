@@ -258,10 +258,9 @@ def parse_entry_by_class_line(frame: int, block: list[str]) -> dict[str, Any]:
 
 def parse_entries(soup: BeautifulSoup) -> list[dict[str, Any]]:
     """
-    公式ページのテキストはおおむね
-    枠 → 登録番号/級別 → 氏名 → 支部/出身地 → 年齢/体重 → F/L → 平均ST...
-    の順で並ぶ。
-    table構造や枠行ではなく、この連続パターンを本文全体から直接拾う。
+    names=5対策版。
+    公式ページ本文の「枠 登録番号/級別 氏名 支部/出身地 ...」の連続パターンから6艇分を拾う。
+    氏名にスペースがある/ない/一部変則があっても、支部/出身地の直前までを氏名として拾う。
     """
     lines = soup_lines(soup)
     text = " ".join(lines)
@@ -270,12 +269,13 @@ def parse_entries(soup: BeautifulSoup) -> list[dict[str, Any]]:
     branch_pat = "|".join(BRANCHES)
 
     # 例:
-    # １ 3827 / B1 今泉 徹 群馬/群馬 52歳/52.0kg F0 L0 0.17 3.93 ...
+    # １ 3827 / B1 今泉 徹 群馬/群馬 52歳/52.0kg ...
+    # 4 3999 / A1 太田和美 大阪/奈良 ...
     pattern = re.compile(
         rf"([{frame_chars}])\s+"
         rf"(?:Image\s+)?"
         rf"(\d{{4}})\s*/\s*(A1|A2|B1|B2)\s+"
-        rf"([一-龥ぁ-んァ-ンー・]{{1,8}}\s+[一-龥ぁ-んァ-ンー・]{{1,8}})\s+"
+        rf"([一-龥ぁ-んァ-ンー・\s]{{2,24}}?)\s+"
         rf"(({branch_pat})/[^ ]+)"
     )
 
@@ -293,7 +293,13 @@ def parse_entries(soup: BeautifulSoup) -> list[dict[str, Any]]:
 
         e = empty_entry(frame)
         e["class"] = m.group(3)
-        e["racer_name"] = clean(m.group(4))
+
+        name = clean(m.group(4))
+        # 氏名に混ざりやすいノイズを除去
+        name = re.sub(r"\b(Image|写真)\b", "", name)
+        name = clean(name)
+        e["racer_name"] = name
+
         e["branch"] = m.group(6)
 
         block_start = m.end()
@@ -309,7 +315,6 @@ def parse_entries(soup: BeautifulSoup) -> list[dict[str, Any]]:
 
         nums = re.findall(r"(?<![0-9])(?:\d+\.\d+|\.\d{2})(?![0-9])", block_text)
 
-        # 平均STは0.10〜0.30台が多い。最初に現れる0.xxを平均STとして採用
         avg_idx = None
         for i, n in enumerate(nums):
             try:
@@ -322,7 +327,6 @@ def parse_entries(soup: BeautifulSoup) -> list[dict[str, Any]]:
 
         if avg_idx is not None:
             data_nums = nums[avg_idx:]
-            # 想定: [avg_st, national_win, national_2, national_3, local_win, local_2, local_3, motor_2, motor_3, boat_2, boat_3]
             if len(data_nums) >= 1:
                 e["avg_st"] = data_nums[0]
             if len(data_nums) >= 4:
@@ -340,7 +344,7 @@ def parse_entries(soup: BeautifulSoup) -> list[dict[str, Any]]:
 
         entries.append(e)
 
-    # フレーム番号が取れない/ズレる時の保険として、順番で1〜6に補正
+    # 6艇取れた場合は順番を1〜6に正規化
     if len(entries) == 6:
         for i, e in enumerate(entries, start=1):
             e["frame"] = i
@@ -450,7 +454,7 @@ def parse_race(date: str, jcd: str, rno: int, html: str) -> dict[str, Any] | Non
     place = JCD_MAP[jcd]
     entries = parse_entries(soup)
     analysis = analyze(entries)
-    grade = ""  # SG/G1/G2/G3の全件誤表示対策。正確な開催グレード取得までは空欄固定。
+    grade = ""  # 誤SG/G1表示防止。正確な開催グレード取得までは空欄固定。
     tz = TIME_ZONE_BY_PLACE.get(place, "デイ")
     summary = f"{place}{rno}Rは、1号艇信頼度{analysis['first_boat_reliability']}、荒れ度{analysis['roughness']}。AI上位4艇と艇別リスクを確認。"
 
@@ -465,7 +469,7 @@ def parse_race(date: str, jcd: str, rno: int, html: str) -> dict[str, Any] | Non
         "time_zone": tz,
         "distance": "1800m",
         "status": "分析済み",
-        "detail_level": "github_actions_regex_parser_no_false_grade_v1",
+        "detail_level": "github_actions_names5_fallback_quality_v1",
         "entries": entries,
         **analysis,
         "summary": summary,
@@ -487,6 +491,50 @@ def fetch_and_parse(task: tuple[str, str, int]) -> tuple[dict[str, Any] | None, 
     names = sum(1 for e in item["entries"] if e.get("racer_name"))
     line = f"[OK] {place} {rno}R names={names} deadline={item.get('deadline','')}"
     return item, line
+
+
+def build_quality_report(races: list[dict[str, Any]]) -> list[str]:
+    report: list[str] = []
+    warn_lines: list[str] = []
+
+    total = len(races)
+    ok = 0
+
+    for race in sorted(races, key=lambda r: (PLACE_TO_JCD.get(r.get("place",""), "99"), int(str(r.get("race_no","0R")).replace("R","") or 0))):
+        entries = race.get("entries", [])
+        missing_name = []
+        missing_class = []
+        missing_st = []
+
+        for e in entries:
+            boat = e.get("frame") or e.get("boat_no")
+            if not e.get("racer_name"):
+                missing_name.append(f"{boat}号艇")
+            if not e.get("class"):
+                missing_class.append(f"{boat}号艇")
+            if not e.get("avg_st"):
+                missing_st.append(f"{boat}号艇")
+
+        if not missing_name and not missing_class and not missing_st and len(entries) == 6:
+            ok += 1
+        else:
+            parts = []
+            if missing_name:
+                parts.append("選手名なし=" + ",".join(missing_name))
+            if missing_class:
+                parts.append("級別なし=" + ",".join(missing_class))
+            if missing_st:
+                parts.append("平均STなし=" + ",".join(missing_st))
+            warn_lines.append(f"[CHECK_WARN] {race.get('place')} {race.get('race_no')} " + " / ".join(parts))
+
+    report.append("===== DATA QUALITY CHECK =====")
+    report.append(f"総レース数：{total}")
+    report.append(f"正常：{ok}")
+    report.append(f"要確認：{len(warn_lines)}")
+    report.extend(warn_lines[:80])
+    if len(warn_lines) > 80:
+        report.append(f"... warn omitted: {len(warn_lines) - 80}")
+    return report
 
 def main() -> None:
     date = target_date()
@@ -522,6 +570,7 @@ def main() -> None:
         return
 
     Path("race-data.json").write_text(json.dumps(races, ensure_ascii=False, indent=2), encoding="utf-8")
+    debug.extend(build_quality_report(races))
     Path("debug-race-data.txt").write_text("\n".join(debug), encoding="utf-8")
     log(f"created race-data.json races={len(races)}")
 
