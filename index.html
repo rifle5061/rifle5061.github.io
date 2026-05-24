@@ -62,9 +62,16 @@ tr:last-child td{border-bottom:0}
 .ticket-block b{display:block;margin-bottom:8px}
 .text{background:#fbfdff;border:1px solid var(--line);border-radius:18px;padding:14px}
 
+
+
+
+
+
+@media(max-width:900px){}
+
+
 .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
 .feature-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 10px 30px rgba(22,31,52,.04)}
-.feature-card .icon{font-size:28px;line-height:1;margin-bottom:10px}
 .feature-card h3{margin:0 0 8px;font-size:22px;letter-spacing:-.02em}
 .feature-card p{margin:0;color:var(--muted)}
 @media(max-width:900px){.feature-grid{grid-template-columns:1fr}}
@@ -112,34 +119,7 @@ footer{margin-top:22px;border-top:1px solid var(--line);padding:26px 0;color:var
       </div>
     </div>
   </section>
-
-  <section class="section" id="features">
-    <div class="wrap">
-      <div class="head">
-        <h2>予想を売るだけではなく、人気リスクを見える化する。</h2>
-        <p>公式出走表にある数字をそのまま並べるのではなく、予想前に確認したいリスクを指数化します。</p>
-      </div>
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="icon">⚠️</div>
-          <h3>危険人気チェック</h3>
-          <p>人気している艇や買い目に、ST・モーター・展示・枠の不安がないかを整理します。</p>
-        </div>
-        <div class="feature-card">
-          <div class="icon">📊</div>
-          <h3>1号艇信頼度</h3>
-          <p>イン有利だけでなく、平均ST・モーター・当地成績・展示気配から信頼度を数値化します。</p>
-        </div>
-        <div class="feature-card">
-          <div class="icon">🎯</div>
-          <h3>本命・抑えを整理</h3>
-          <p>本命5点・抑え3点をAI独自指数順で表示。オッズだけに引っ張られない買い目整理を狙います。</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="search" class="section">
+<section id="search" class="section">
     <div class="wrap">
       <div class="card">
         <div class="head">
@@ -178,6 +158,30 @@ footer{margin-top:22px;border-top:1px solid var(--line);padding:26px 0;color:var
     </div>
   </section>
 </main>
+
+
+  <section class="section" id="features">
+    <div class="wrap">
+      <div class="head">
+        <h2>予想を売るだけではなく、人気リスクを見える化する。</h2>
+        <p>公式出走表にある数字をそのまま並べるのではなく、予想前に確認したいリスクを指数化します。</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h3>危険人気チェック</h3>
+          <p>人気している艇や買い目に、ST・モーター・展示・枠の不安がないかを整理します。</p>
+        </div>
+        <div class="feature-card">
+          <h3>1号艇信頼度</h3>
+          <p>イン有利だけでなく、平均ST・モーター・当地成績・展示気配から信頼度を数値化します。</p>
+        </div>
+        <div class="feature-card">
+          <h3>本命・抑えを整理</h3>
+          <p>本命5点・抑え3点をAI独自指数順で表示。オッズだけに引っ張られない買い目整理を狙います。</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
 <footer>
   <div class="wrap">
