@@ -76,6 +76,15 @@ tr:last-child td{border-bottom:0}
 .feature-card p{margin:0;color:var(--muted)}
 @media(max-width:900px){.feature-grid{grid-template-columns:1fr}}
 
+
+.entry-note{color:var(--muted);font-size:13px;margin:6px 0 10px}
+.entry-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px;background:#fff;margin:8px 0 18px}
+.entry-table{width:100%;min-width:920px;border-collapse:collapse}
+.entry-table th,.entry-table td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:13px}
+.entry-table th{background:#f8fbff;color:#26425f;white-space:nowrap}
+.entry-table tr:last-child td{border-bottom:0}
+.entry-frame{font-weight:900;font-size:18px}
+
 footer{margin-top:22px;border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px}
 @media (max-width: 980px){
   .hero-grid,.form,.metrics,.top4-grid{grid-template-columns:1fr 1fr}
@@ -313,6 +322,55 @@ function showAll(){
   show('<h3>登録レース一覧</h3><div class="chips">' + raceData.map((r,i) => `<button class="chip" onclick="render(raceData[${i}])">${esc(r.date)} ${esc(r.place)} ${esc(r.race_no)}</button>`).join('') + '</div>');
 }
 
+
+function entryValue(e, keys){
+  for(const k of keys){
+    if(e[k] !== undefined && e[k] !== null && e[k] !== "") return e[k];
+  }
+  return "-";
+}
+function fmtRate(v){
+  if(v === undefined || v === null || v === "") return "-";
+  return String(v);
+}
+function entryTable(r){
+  const entries = Array.isArray(r.entries) ? r.entries : [];
+  if(!entries.length){
+    return '<p><b>出走表主要データ</b></p><div class="notice">このレースの出走表データはまだ未登録です。次回のrace-data.jsonから entries に選手名・平均ST・モーター率などを入れると表示されます。</div>';
+  }
+  const rows = entries.slice().sort((a,b)=>(Number(a.frame||a.boat||a.boat_no||0)-Number(b.frame||b.boat||b.boat_no||0))).map(e => {
+    const frame = entryValue(e, ["frame","boat","boat_no"]);
+    const name = entryValue(e, ["racer_name","name","player","racer"]);
+    const cls = entryValue(e, ["class","racer_class","grade_class"]);
+    const avgSt = entryValue(e, ["avg_st","average_st","st"]);
+    const nat3 = entryValue(e, ["national_3rate","national_3_rate","zenkoku_3rate"]);
+    const loc3 = entryValue(e, ["local_3rate","local_3_rate","touchi_3rate"]);
+    const m2 = entryValue(e, ["motor_2rate","motor_2_rate","motor2"]);
+    const m3 = entryValue(e, ["motor_3rate","motor_3_rate","motor3"]);
+    const b3 = entryValue(e, ["boat_3rate","boat_3_rate","boat3"]);
+    const exst = entryValue(e, ["exhibition_st","tenji_st"]);
+    const extime = entryValue(e, ["exhibition_time","tenji_time"]);
+    return '<tr>' +
+      '<td><span class="entry-frame">' + esc(frame) + '号艇</span></td>' +
+      '<td>' + esc(name) + '</td>' +
+      '<td>' + esc(cls) + '</td>' +
+      '<td>' + esc(avgSt) + '</td>' +
+      '<td>' + esc(fmtRate(nat3)) + '</td>' +
+      '<td>' + esc(fmtRate(loc3)) + '</td>' +
+      '<td>' + esc(fmtRate(m2)) + '</td>' +
+      '<td>' + esc(fmtRate(m3)) + '</td>' +
+      '<td>' + esc(fmtRate(b3)) + '</td>' +
+      '<td>' + esc(exst) + '</td>' +
+      '<td>' + esc(extime) + '</td>' +
+    '</tr>';
+  }).join('');
+  return '<p><b>出走表主要データ</b></p>' +
+    '<div class="entry-note">枠・選手・級別・平均ST・全国/当地3連率・モーター2連率/3連率・展示情報を確認できます。</div>' +
+    '<div class="entry-table-wrap"><table class="entry-table"><thead><tr>' +
+    '<th>枠</th><th>選手</th><th>級</th><th>平均ST</th><th>全国3連率</th><th>当地3連率</th><th>M2連率</th><th>M3連率</th><th>B3連率</th><th>展示ST</th><th>展示T</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+}
+
 function top4Boats(r){
   let list = r.top4_boats || r.top4Boats || [];
 
@@ -387,6 +445,7 @@ function render(r){
       '<div class="metric"><span>勝負度/慎重度</span><strong style="font-size:26px">' + esc(r.risk_level || '-') + '</strong></div>' +
       '<div class="metric"><span>締切</span><strong style="font-size:26px">' + esc(r.deadline || '-') + '</strong></div>' +
     '</div>' +
+    entryTable(r) +
     top4Boats(r) +
     '<p><b>危険人気候補</b></p><div class="chips">' + danger(r) + '</div>' +
     boatRisks(r) +
