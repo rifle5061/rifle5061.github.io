@@ -1,0 +1,190 @@
+name: Update race-data.json
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_date:
+        description: "取得する日付。YYYYMMDD。空欄なら日本時間の今日"
+        required: false
+        default: ""
+  schedule:
+    # 毎朝 7:00 JST = 前日 22:00 UTC
+    - cron: "0 22 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-race-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install libraries
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4 lxml
+
+      - name: Build race-data.json
+        env:
+          TARGET_DATE: ${{ github.event.inputs.target_date }}
+        run: |
+          cat > /tmp/build_race_data.py <<'PY'
+          from __future__ import annotations
+
+          import json
+          import os
+          import re
+          import time
+          from datetime import datetime, timedelta, timezone
+          from pathlib import Path
+          from typing import Any
+
+          import requests
+          from bs4 import BeautifulSoup
+
+          JST = timezone(timedelta(hours=9))
+
+          JCD_MAP = {
+              "01": "桐生", "02": "戸田", "03": "江戸川", "04": "平和島", "05": "多摩川", "06": "浜名湖",
+              "07": "蒲郡", "08": "常滑", "09": "津", "10": "三国", "11": "びわこ", "12": "住之江",
+              "13": "尼崎", "14": "鳴門", "15": "丸亀", "16": "児島", "17": "宮島", "18": "徳山",
+              "19": "下関", "20": "若松", "21": "芦屋", "22": "福岡", "23": "唐津", "24": "大村",
+          }
+
+          TIME_ZONE_BY_PLACE = {
+              "三国": "モーニング", "徳山": "モーニング", "芦屋": "モーニング", "唐津": "モーニング",
+              "桐生": "ナイター", "蒲郡": "ナイター", "住之江": "ナイター", "丸亀": "ナイター", "若松": "ナイター", "大村": "ナイター",
+              "下関": "ミッドナイト",
+          }
+
+          BASE_URL = "https://www.boatrace.jp/owpc/pc/race/racelist"
+
+          def target_date() -> str:
+              raw = (os.environ.get("TARGET_DATE") or "").strip()
+              if raw:
+                  return raw.replace("-", "")
+              return datetime.now(JST).strftime("%Y%m%d")
+
+          def date_hyphen(yyyymmdd: str) -> str:
+              return f"{yyyymmdd[:4]}-{yyyymmdd[4:6]}-{yyyymmdd[6:8]}"
+
+          def clean(s: str) -> str:
+              return re.sub(r"\s+", " ", s or "").strip()
+
+          def fetch_html(date: str, jcd: str, rno: int) -> str | None:
+              url = f"{BASE_URL}?hd={date}&jcd={jcd}&rno={rno}"
+              headers = {
+                  "User-Agent": "Mozilla/5.0 (compatible; BoatAIRiskLab/0.3; +https://rifle5061.github.io/boat-ai-risk-lab/)"
+              }
+              try:
+                  res = requests.get(url, headers=headers, timeout=20)
+                  res.raise_for_status()
+                  res.encoding = res.apparent_encoding or "utf-8"
+                  return res.text
+              except Exception as e:
+                  print(f"[fetch-ng] {date} {jcd} {rno}R {e}")
+                  return None
+
+          def parse_deadline(text: str) -> str:
+              for pat in [
+                  r"締切予定時刻\s*([0-9]{1,2}:[0-9]{2})",
+                  r"締切予定\s*([0-9]{1,2}:[0-9]{2})",
+                  r"締切\s*([0-9]{1,2}:[0-9]{2})",
+              ]:
+                  m = re.search(pat, text)
+                  if m:
+                      return m.group(1)
+              times = re.findall(r"\b([0-2]?[0-9]:[0-5][0-9])\b", text)
+              return times[0] if times else ""
+
+          def race_grade(text: str) -> str:
+              upper = text.upper()
+              if "SG" in upper: return "SG"
+              if "G1" in upper or "Ｇ１" in upper: return "G1"
+              if "G2" in upper or "Ｇ２" in upper: return "G2"
+              if "G3" in upper or "Ｇ３" in upper: return "G3"
+              return ""
+
+          def make_empty_entry(frame: int) -> dict[str, Any]:
+              return {
+                  "frame": frame,
+                  "boat_no": frame,
+                  "racer_name": "",
+                  "class": "",
+                  "branch": "",
+                  "f_count": "",
+                  "l_count": "",
+                  "avg_st": "",
+                  "national_2rate": "",
+                  "national_3rate": "",
+                  "local_2rate": "",
+                  "local_3rate": "",
+                  "motor_2rate": "",
+                  "motor_3rate": "",
+                  "boat_2rate": "",
+                  "boat_3rate": "",
+                  "exhibition_st": "",
+                  "exhibition_time": "",
+              }
+
+          def cell_lines(cell) -> list[str]:
+              return [clean(x) for x in cell.get_text("\n").split("\n") if clean(x)]
+
+          def parse_row(cells: list[list[str]], frame: int) -> dict[str, Any]:
+              entry = make_empty_entry(frame)
+              flat = [x for c in cells for x in c]
+              joined = " ".join(flat)
+
+              m = re.search(r"\b(A1|A2|B1|B2)\b", joined)
+              if m:
+                  entry["class"] = m.group(1)
+
+              branches = ["群馬","埼玉","東京","静岡","愛知","三重","福井","滋賀","大阪","兵庫","徳島","香川","岡山","広島","山口","福岡","佐賀","長崎"]
+              for b in branches:
+                  if b in flat:
+                      entry["branch"] = b
+                      break
+
+              for token in flat:
+                  if re.fullmatch(r"[一-龥ぁ-んァ-ンー・]{2,10}", token):
+                      if token not in branches and token not in ["全国","当地","モーター","ボート","勝率","2連率","3連率"]:
+                          entry["racer_name"] = token
+                          break
+
+              f = re.search(r"F\s*([0-9])", joined)
+              l = re.search(r"L\s*([0-9])", joined)
+              if f:
+                  entry["f_count"] = f.group(1)
+              if l:
+                  entry["l_count"] = l.group(1)
+
+              st = re.findall(r"(?<![0-9])\.([0-9]{2})(?![0-9])", joined)
+              if st:
+                  entry["avg_st"] = "." + st[0]
+
+              rates = re.findall(r"(?<![0-9])([0-9]{1,3}\.[0-9]{2})(?![0-9])", joined)
+              if len(rates) >= 12:
+                  entry["national_2rate"] = rates[1]
+                  entry["national_3rate"] = rates[2]
+                  entry["local_2rate"] = rates[4]
+                  entry["local_3rate"] = rates[5]
+                  entry["motor_2rate"] = rates[7]
+                  entry["motor_3rate"] = rates[8]
+                  entry["boat_2rate"] = rates[10]
+                  entry["boat_3rate"] = rates[11]
+              elif len(rates) >= 8:
+                  entry["national_2rate"] = rates[0]
+                  entry["national_3rate"] = rates[1]
+                  entry["local_2rate"] = rates[2]
+                  entry["local_3rate"] = rates[3]
+                  entry["motor_2rate"] = rates[4]
+                  entry["motor_3rate"] = rates[5]
+                  entry["boat_2rate"] = rates
