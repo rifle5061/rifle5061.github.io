@@ -246,7 +246,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:06",
+    "weather": {
+      "time": "15:59",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -495,7 +507,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:06",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -744,7 +768,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:06",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -993,7 +1029,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:06",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -1242,7 +1290,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:05",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -1491,7 +1551,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:07",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -1740,7 +1812,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:13",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -1989,7 +2073,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:16",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -2238,7 +2334,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:16",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -2487,7 +2595,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:16",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -2736,7 +2856,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:14",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -2985,7 +3117,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:17",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -3234,7 +3378,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:24",
+    "weather": {
+      "time": "16:22",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -3483,7 +3639,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:25",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -3732,7 +3900,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:27",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -3981,7 +4161,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:25",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -4230,7 +4422,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:27",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -4479,7 +4683,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:28",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -4728,7 +4944,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:34",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -4977,7 +5205,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:33",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -5226,7 +5466,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:33",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -5475,7 +5727,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:36",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -5724,7 +5988,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:37",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -5973,7 +6249,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:37",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -6222,7 +6510,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:43",
+    "weather": {
+      "time": "16:02",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -6471,7 +6771,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:41",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -6720,7 +7032,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:43",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -6969,7 +7293,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:46",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -7218,7 +7554,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:45",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -7467,7 +7815,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:46",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -7716,7 +8076,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:50",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -7965,7 +8337,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:52",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -8214,7 +8598,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:51",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -8463,7 +8859,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:56",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -8712,7 +9120,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:55",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -8961,7 +9381,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:55",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -9210,7 +9642,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:36:58",
+    "weather": {
+      "time": "16:19",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -9459,7 +9903,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:00",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -9708,7 +10164,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:03",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -9957,7 +10425,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:04",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -10206,7 +10686,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:04",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -10455,7 +10947,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:06",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -10704,7 +11208,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:08",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -10953,7 +11469,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:10",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -11202,7 +11730,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:13",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -11451,7 +11991,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:14",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -11700,7 +12252,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:12",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -11949,7 +12513,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:15",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -12198,7 +12774,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:17",
+    "weather": {
+      "time": "14:08",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -12447,7 +13035,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:18",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -12696,7 +13296,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:22",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -12945,7 +13557,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:23",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -13194,7 +13818,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:23",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -13443,7 +14079,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:25",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -13692,7 +14340,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:26",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -13941,7 +14601,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:28",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -14190,7 +14862,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:33",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -14439,7 +15123,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:32",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -14688,7 +15384,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:33",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -14937,7 +15645,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:34",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -15186,7 +15906,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:36",
+    "weather": {
+      "time": "16:03",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -15435,7 +16167,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:38",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -15684,7 +16428,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:41",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -15933,7 +16689,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:42",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -16182,7 +16950,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:42",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -16431,7 +17211,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:42",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -16680,7 +17472,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:45",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -16929,7 +17733,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:47",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -17178,7 +17994,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:49",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -17427,7 +18255,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:51",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -17676,7 +18516,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:52",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -17925,7 +18777,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:51",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -18174,7 +19038,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:54",
+    "weather": {
+      "time": "15:53",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -18423,7 +19299,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:56",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -18672,7 +19560,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:37:59",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -18921,7 +19821,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:00",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -19170,7 +20082,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:00",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -19419,7 +20343,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:01",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -19668,7 +20604,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:03",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -19917,7 +20865,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:07",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -20166,7 +21126,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:08",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -20415,7 +21387,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:10",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -20664,7 +21648,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:10",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -20913,7 +21909,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:09",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -21162,7 +22170,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:12",
+    "weather": {
+      "time": "16:28",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -21411,7 +22431,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:16",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -21660,7 +22692,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:18",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -21909,7 +22953,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:19",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -22158,7 +23214,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:20",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -22407,7 +23475,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:20",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -22656,7 +23736,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:21",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -22905,7 +23997,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:26",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -23154,7 +24258,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:28",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -23403,7 +24519,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:29",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -23652,7 +24780,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:29",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -23901,7 +25041,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:28",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -24150,7 +25302,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:31",
+    "weather": {
+      "time": "16:30",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -24399,7 +25563,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:36",
+    "weather": {
+      "time": "16:30",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -24648,7 +25824,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:37",
+    "weather": {
+      "time": "16:30",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -24897,7 +26085,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:38",
+    "weather": {
+      "time": "16:30",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -25146,7 +26346,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:38",
+    "weather": {
+      "time": "16:30",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -25395,7 +26607,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:40",
+    "weather": {
+      "time": "16:30",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -25644,7 +26868,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:40",
+    "weather": {
+      "time": "16:30",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -25893,7 +27129,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:46",
+    "weather": {
+      "time": "16:30",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -26142,7 +27390,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:48",
+    "weather": {
+      "time": "16:30",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -26391,7 +27651,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:48",
+    "weather": {
+      "time": "16:30",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -26640,7 +27912,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:48",
+    "weather": {
+      "time": "16:30",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -26889,7 +28173,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:50",
+    "weather": {
+      "time": "16:30",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -27138,7 +28434,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:50",
+    "weather": {
+      "time": "14:18",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -27387,7 +28695,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:55",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -27636,7 +28956,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:56",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -27885,7 +29217,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:56",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -28134,7 +29478,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:57",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -28383,7 +29739,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:38:58",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -28632,7 +30000,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:01",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -28881,7 +30261,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:04",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -29130,7 +30522,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:04",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -29379,7 +30783,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:05",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -29628,7 +31044,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:06",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -29877,7 +31305,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:06",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -30126,7 +31566,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:10",
+    "weather": {
+      "time": "14:04",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -30375,7 +31827,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:12",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -30624,7 +32088,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:15",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -30873,7 +32349,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:16",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -31122,7 +32610,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:14",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -31371,7 +32871,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:16",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -31620,7 +33132,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:19",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -31869,7 +33393,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:21",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -32118,7 +33654,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:22",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -32367,7 +33915,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:23",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -32616,7 +34176,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:25",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -32865,7 +34437,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:26",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "曇り",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -33114,7 +34698,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:30",
+    "weather": {
+      "time": "16:05",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -33363,7 +34959,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:30",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -33612,7 +35220,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:30",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -33861,7 +35481,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:31",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -34110,7 +35742,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:33",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -34359,7 +36003,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:34",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -34608,7 +36264,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:38",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -34857,7 +36525,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:39",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -35106,7 +36786,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:39",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -35355,7 +37047,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:41",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -35604,7 +37308,19 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:43",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   },
   {
     "date": "2026-05-24",
@@ -35853,6 +37569,18 @@
       "popularity": null,
       "hit_classification": "",
       "review_note": ""
-    }
+    },
+    "beforeinfo_status": "取得済み",
+    "beforeinfo_updated_at": "2026-05-24 16:39:45",
+    "weather": {
+      "time": "",
+      "air_temperature": "",
+      "weather": "晴",
+      "wind_speed": "",
+      "wind_direction": "",
+      "water_temperature": "",
+      "wave_height": ""
+    },
+    "start_exhibition": []
   }
 ]
