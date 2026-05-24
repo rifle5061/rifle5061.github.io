@@ -45,18 +45,25 @@ def date_hyphen(yyyymmdd: str) -> str:
 def clean(s: str) -> str:
     return re.sub(r"\s+", " ", s or "").strip()
 
-def fetch_url(url: str, timeout: int = 10) -> str | None:
+def fetch_url(url: str, timeout: int = 25) -> str | None:
     headers = {
-        "User-Agent": "Mozilla/5.0 (compatible; BoatAIRiskLab/0.6; +https://rifle5061.github.io/boat-ai-risk-lab/)"
+        "User-Agent": "Mozilla/5.0 (compatible; BoatAIRiskLab/0.7; +https://rifle5061.github.io/boat-ai-risk-lab/)"
     }
-    try:
-        res = requests.get(url, headers=headers, timeout=timeout)
-        res.raise_for_status()
-        res.encoding = res.apparent_encoding or "utf-8"
-        return res.text
-    except Exception as e:
-        log(f"[FETCH_NG] {url} {e}")
-        return None
+
+    last_error = None
+    for attempt in range(1, 3):
+        try:
+            res = requests.get(url, headers=headers, timeout=timeout)
+            res.raise_for_status()
+            res.encoding = res.apparent_encoding or "utf-8"
+            return res.text
+        except Exception as e:
+            last_error = e
+            log(f"[FETCH_RETRY] attempt={attempt} url={url} error={e}")
+            time.sleep(1.5 * attempt)
+
+    log(f"[FETCH_NG] {url} {last_error}")
+    return None
 
 def target_jcds_from_official_index(date: str) -> list[str]:
     """
@@ -128,7 +135,7 @@ def target_jcds(date: str) -> list[str]:
 
 def fetch_racelist_html(date: str, jcd: str, rno: int) -> str | None:
     url = f"{BASE_RACELIST_URL}?hd={date}&jcd={jcd}&rno={rno}"
-    return fetch_url(url, timeout=8)
+    return fetch_url(url, timeout=25)
 
 def parse_deadline(text: str) -> str:
     for pat in [
@@ -405,7 +412,7 @@ def main() -> None:
 
             log(line)
             debug.append(line)
-            time.sleep(0.25)
+            time.sleep(0.2)
 
     Path("race-data.json").write_text(json.dumps(races, ensure_ascii=False, indent=2), encoding="utf-8")
     Path("debug-race-data.txt").write_text("\n".join(debug), encoding="utf-8")
