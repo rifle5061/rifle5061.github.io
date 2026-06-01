@@ -37,14 +37,24 @@ jobs:
         run: |
           python scripts/build_race_data.py
 
+      - name: Enrich race-data.json
+        run: |
+          python scripts/enrich_race_data.py
+
       - name: Commit race-data.json
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add race-data.json debug-race-data.txt debug-source-snippets.txt
+
+          git add race-data.json
+          [ -f debug-race-data.txt ] && git add debug-race-data.txt || true
+          [ -f debug-source-snippets.txt ] && git add debug-source-snippets.txt || true
+          [ -f debug-enrich-race-data.txt ] && git add debug-enrich-race-data.txt || true
+
           if git diff --cached --quiet; then
             echo "No changes"
           else
             git commit -m "Update race-data.json"
+            git pull --rebase origin main
             git push
           fi
