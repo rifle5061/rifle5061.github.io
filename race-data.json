@@ -1407,9 +1407,9 @@
         "motor_no": "21",
         "motor_2rate": "35.88",
         "motor_3rate": "53.44",
-        "boat_no_data": "43",
-        "boat_2rate": "28.93",
-        "boat_3rate": "43.80",
+        "boat_no_data": "35",
+        "boat_2rate": "36.43",
+        "boat_3rate": "55.81",
         "exhibition_st": "",
         "exhibition_time": ""
       },
@@ -1507,8 +1507,8 @@
       {
         "boat": 3,
         "role": "攻撃脅威度＋3着残り",
-        "rank": "B-",
-        "score": 53,
+        "rank": "B",
+        "score": 55,
         "risk_note": "攻撃脅威度＋3着残り評価。平均ST0.18、全国/当地3連率=53.62/62.07、M3=53.44。"
       },
       {
@@ -1544,8 +1544,8 @@
       {
         "boat": 3,
         "label": "攻撃脅威度＋3着残り",
-        "rank": "B-",
-        "score": 53,
+        "rank": "B",
+        "score": 55,
         "reason": "攻撃脅威度＋3着残り評価。平均ST0.18、全国/当地3連率=53.62/62.07、M3=53.44。"
       },
       {
@@ -22965,7 +22965,7 @@
     "date": "2026-06-17",
     "place": "宮島",
     "race_no": "3R",
-    "deadline": "11:45",
+    "deadline": "11:46",
     "event_title": "",
     "grade": "",
     "event_grade": "",
@@ -23232,7 +23232,7 @@
     "date": "2026-06-17",
     "place": "宮島",
     "race_no": "4R",
-    "deadline": "12:13",
+    "deadline": "12:14",
     "event_title": "",
     "grade": "",
     "event_grade": "",
@@ -23499,7 +23499,7 @@
     "date": "2026-06-17",
     "place": "宮島",
     "race_no": "5R",
-    "deadline": "12:43",
+    "deadline": "12:44",
     "event_title": "",
     "grade": "",
     "event_grade": "",
